@@ -6,7 +6,6 @@ import urllib.parse
 import json
 from .market import Market
 
-#http://pubapi.cryptsy.com/api.php?method=singlemarketdata&marketid=132
 class VircurexDOGEtoBTC(Market):
     def __init__(self):
         super(VircurexDOGEtoBTC, self).__init__("USD")
