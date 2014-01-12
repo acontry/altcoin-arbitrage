@@ -1,9 +1,6 @@
 __author__ = 'alex'
 
-import urllib.request
-import urllib.error
-import urllib.parse
-import json
+import requests
 from .market import Market
 
 class VircurexDOGEtoBTC(Market):
@@ -13,14 +10,9 @@ class VircurexDOGEtoBTC(Market):
 
     def update_depth(self):
         url = 'https://vircurex.com/api/orderbook.json'
-        price_query = [('base', 'DOGE'), ('alt', 'BTC')]
-        data = urllib.parse.urlencode(price_query)
-        user_agent = 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)'
-        headers = { 'User-Agent' : user_agent }
-        full_url = url + '?' + data
-        req = urllib.request.Request(full_url, None, headers)
-        res = urllib.request.urlopen(req)
-        depth = json.loads(res.read().decode('utf8'))
+        price_query = {'base': 'DOGE', 'alt': 'BTC'}
+        res = requests.get(url, data=price_query)
+        depth = res.json()
         self.depth = self.format_depth(depth)
 
     def sort_and_format(self, orders, reverse=False):

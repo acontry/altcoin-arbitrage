@@ -1,9 +1,6 @@
 __author__ = 'alex'
 
-import urllib.request
-import urllib.error
-import urllib.parse
-import json
+import requests
 from .market import Market
 
 #http://pubapi.cryptsy.com/api.php?method=singlemarketdata&marketid=132
@@ -15,8 +12,8 @@ class CryptsyDOGEtoBTC(Market):
     def update_depth(self):
         #Dogecoin/BTC exchange URL
         url = 'http://pubapi.cryptsy.com/api.php?method=singlemarketdata&marketid=132'
-        res = urllib.request.urlopen(url)
-        depth = json.loads(res.read().decode('utf8'))
+        res = requests.get(url)
+        depth = res.json()
         self.depth = self.format_depth(depth)
 
     def sort_and_format(self, orders, reverse=False):
