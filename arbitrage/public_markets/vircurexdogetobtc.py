@@ -5,7 +5,7 @@ from .market import Market
 
 class VircurexDOGEtoBTC(Market):
     def __init__(self):
-        super(VircurexDOGEtoBTC, self).__init__("USD")
+        super(VircurexDOGEtoBTC, self).__init__()
         self.update_rate = 60
 
     def update_depth(self):

@@ -6,7 +6,7 @@ from .market import Market
 #http://pubapi.cryptsy.com/api.php?method=singlemarketdata&marketid=132
 class BterDOGEtoBTC(Market):
     def __init__(self):
-        super(BterDOGEtoBTC, self).__init__("USD")
+        super(BterDOGEtoBTC, self).__init__()
         self.update_rate = 60
 
     def update_depth(self):
