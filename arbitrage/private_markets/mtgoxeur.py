@@ -18,10 +18,10 @@ class PrivateMtGoxEUR(PrivateMtGox):
         params = [("nonce", self._create_nonce())]
         response = self._send_request(self.info_url, params)
         if response and "result" in response and response["result"] == "success":
-            self.btc_balance = self._from_int_amount(int(
+            self.p_coin_balance = self._from_int_amount(int(
                 response["return"]["Wallets"]["BTC"]["Balance"]["value_int"]))
             self.eur_balance = self._from_int_price(int(
                 response["return"]["Wallets"]["EUR"]["Balance"]["value_int"]))
-            self.usd_balance = self.fc.convert(self.eur_balance, "EUR", "USD")
+            self.s_coin_balance = self.fc.convert(self.eur_balance, "EUR", "USD")
             return 1
         return None

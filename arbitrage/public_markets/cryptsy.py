@@ -4,9 +4,9 @@ import requests
 from .market import Market
 
 #http://pubapi.cryptsy.com/api.php?method=singlemarketdata&marketid=132
-class CryptsyDOGEtoBTC(Market):
+class Cryptsy(Market):
     def __init__(self):
-        super(CryptsyDOGEtoBTC, self).__init__()
+        super(Cryptsy, self).__init__()
         self.update_rate = 60
 
     def update_depth(self):
@@ -31,5 +31,5 @@ class CryptsyDOGEtoBTC(Market):
         return {'asks': asks, 'bids': bids}
 
 if __name__ == "__main__":
-    market = CryptsyDOGEtoBTC()
+    market = Cryptsy()
     print(market.get_ticker())

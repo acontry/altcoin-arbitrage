@@ -67,5 +67,5 @@ class PrivateBitstampUSD(Market):
         """Get balance"""
         response = self._send_request(self.balance_url)
         if response:
-            self.btc_balance = float(response["btc_available"])
-            self.usd_balance = float(response["usd_available"])
+            self.p_coin_balance = float(response["btc_available"])
+            self.s_coin_balance = float(response["usd_available"])

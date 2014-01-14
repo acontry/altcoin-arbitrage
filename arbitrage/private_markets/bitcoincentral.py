@@ -85,9 +85,9 @@ class PrivateBitcoinCentral(Market):
     def get_info(self):
         response = self._send_request(self.balance_url)
         if response:
-            self.btc_balance = response["BTC"]
+            self.p_coin_balance = response["BTC"]
             self.eur_balance = response["EUR"]
-            self.usd_balance = self.fc.convert(self.eur_balance, "EUR", "USD")
+            self.s_coin_balance = self.fc.convert(self.eur_balance, "EUR", "USD")
 
 if __name__ == "__main__":
     market = PrivateBitcoinCentral()
