@@ -204,11 +204,7 @@ class Arbitrer(object):
 
     def loop(self):
         while True:
-            print("Updating depths...")
             self.depths = self.update_depths()
-            print("Get tickers...")
             self.tickers()
-            print("tick!")
             self.tick()
-            print("Wait...")
             time.sleep(config.refresh_rate)

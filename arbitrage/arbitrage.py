@@ -3,6 +3,7 @@
 import logging
 import argparse
 import sys
+import requests
 from arbitrer import Arbitrer
 
 
