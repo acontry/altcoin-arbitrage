@@ -10,8 +10,8 @@ from utils import log_exception
 class Market(object):
     def __init__(self):
         self.name = self.__class__.__name__
-        self.pCoin = config.pCoin
-        self.sCoin = config.sCoin
+        self.pCoin = config.p_coin
+        self.sCoin = config.s_coin
         self.depth_updated = 0
         self.update_rate = 60
 

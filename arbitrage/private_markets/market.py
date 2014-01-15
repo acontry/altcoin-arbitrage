@@ -9,8 +9,8 @@ class TradeException(Exception):
 class Market:
     def __init__(self):
         self.name = self.__class__.__name__
-        self.p_coin = config.pCoin
-        self.s_coin = config.sCoin
+        self.p_coin = config.p_coin
+        self.s_coin = config.s_coin
         self.p_coin_balance = 0.0
         self.s_coin_balance = 0.0
 
