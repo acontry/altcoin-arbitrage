@@ -38,8 +38,8 @@ class Arbitrer(object):
 
     def get_profit_for(self, mi, mj, kask, kbid):
         """Returns"""
-        if self.depths[kask]["asks"][mi]["price"] \
-                >= self.depths[kbid]["bids"][mj]["price"]:
+        if self.depths[kask]["asks"][mi]["price"] >= \
+                self.depths[kbid]["bids"][mj]["price"]:
             return 0, 0, 0, 0
 
         max_amount_buy = 0
@@ -123,6 +123,23 @@ class Arbitrer(object):
             self.depths[kbid]["bids"][best_j]["price"], \
             best_w_buyprice, best_w_sellprice
 
+    def check_opportunity(self, kask, kbid):
+        """Replacement for arbitrage_depth_opportunity machinery. Returns the
+        profit, volume, buy price, sell price, weighted buy/sell prices for a
+        potential arbitrage opportunity. Only considers the best bid/ask prices
+        and does not go into the depth like the more complicated method."""
+        buy_price = self.depths[kask]["asks"][0]["price"]
+        sell_price = self.depths[kbid]["bids"][0]["price"]
+
+        ask_vol = self.depths[kask]["asks"][0]["amount"]
+        bid_vol = self.depths[kbid]["bids"][0]["amount"]
+
+        trade_vol = min(ask_vol, bid_vol, config.max_tx_volume)
+        profit = (sell_price - buy_price) * trade_vol
+
+        # Set weighted prices to the same as prices
+        return profit, trade_vol, buy_price, sell_price, buy_price, sell_price
+
     def arbitrage_opportunity(self, kask, ask, kbid, bid):
         """Calculates arbitrage opportunity for specified bid and ask, and
         presents this opportunity to all observers.
@@ -136,7 +153,7 @@ class Arbitrer(object):
         """
         perc = (bid["price"] - ask["price"]) / bid["price"] * 100
         profit, volume, buyprice, sellprice, weighted_buyprice, \
-        weighted_sellprice = self.arbitrage_depth_opportunity(kask, kbid)
+        weighted_sellprice = self.check_opportunity(kask, kbid)
         if volume == 0 or buyprice == 0:
             return
         perc2 = (1 - (volume - (profit / buyprice)) / volume) * 100
@@ -158,6 +175,7 @@ class Arbitrer(object):
         return depths
 
     def tickers(self):
+        """Update markets and print tickers to verbose log."""
         for market in self.markets:
             logging.verbose("ticker: " + market.name + " - " + str(
                 market.get_ticker()))
@@ -193,7 +211,7 @@ class Arbitrer(object):
                         and len(market1["asks"]) > 0 \
                         and len(market2["bids"]) > 0:
                     # Check that market pair presents a possible arbitrage
-                    # opporunity, and check it in detail if it does.
+                    # opportunity, and check it in detail if it does.
                     if float(market1["asks"][0]['price']) \
                             < float(market2["bids"][0]['price']):
                         self.arbitrage_opportunity(kmarket1, market1["asks"][0],
@@ -203,6 +221,7 @@ class Arbitrer(object):
             observer.end_opportunity_finder()
 
     def loop(self):
+        """Main loop."""
         while True:
             self.depths = self.update_depths()
             self.tickers()
