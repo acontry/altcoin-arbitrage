@@ -3,13 +3,22 @@
 This project is based on the github project
 https://github.com/maxme/bitcoin-arbitrage
 
-Its documentation follows - it isn't completely updated!
+The original project was designed for arbitrage between Bitcoin and US dollars/
+Euros, but the focus of the new project is arbitrage between coins, such as
+Dogecoin and Bitcoin. Ideally it should support any coin pair that is available
+to trade on a market.
 
 
 It gets order books from supported exchanges and calculate arbitrage
 opportunities between each markets. It takes market depth into account.
 
 Currently supported exchanges to get data:
+ - Cryptsy (DOGE to BTC)
+ - Vircurex (DOGE to BTC)
+ - Coins-e (DOGE to BTC)
+ - Bter (DOGE to BTC)
+
+Old BTC/dollar exchanges:
  - MtGox (USD, EUR)
  - Bitstamp (USD, ~EUR)
  - Bitcoin24 (EUR)
@@ -22,11 +31,12 @@ Currently supported exchanges to get data:
  - Bitcoin-Central (EUR)
 
 Currently supported exchanges to automate trade:
+ - Cryptsy (any coin pair)
+
+Old BTC/dollar exchanges:
  - MtGox (EUR, USD)
  - Bitstamp (USD)
  - Bitcoin-Central (EUR) - (API changed)
-
-Donation are always welcome: **1Maxime7WnLqq24hasMA872JZ4VBGMDbKk**
 
 # WARNING
 
@@ -44,6 +54,10 @@ You need Python3 to run this program. To install on Debian, Ubuntu, or
 variants of them, use:
 
     $ sudo apt-get install python3 python3-pip python-nose
+
+The requests package is required. To install:
+
+    $ pip3 install requests
 
 To use the observer XMPPMessager you will need to install sleekxmpp:
 
