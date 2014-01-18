@@ -8,6 +8,7 @@ import urllib.request
 import requests
 import hashlib
 import random
+from collections import OrderedDict
 import json
 import config
 
@@ -18,6 +19,7 @@ class PrivateVircurex(Market):
     def __init__(self):
         super().__init__()
         self.secrets = config.vircurex_secrets
+        self.user = config.vircurex_user
         self.get_info()
 
     #OLD
@@ -42,16 +44,19 @@ class PrivateVircurex(Market):
                             (self.name, e))
         return value
 
-    def secure_request(self, user, secret, command, tokenparams, **params):
+    def secure_request(self, command, params):
+        """params is an ordered dictionary of parameters to pass."""
+        secret = self.secrets[command]
         t = time.strftime("%Y-%m-%dT%H:%M:%S", time.gmtime())  # UTC time
         txid = "%s-%f" % (t, random.randint(0, 1 << 31))
         txid = hashlib.sha256(txid.encode("ascii")).hexdigest()  # unique transmission ID using random hash
-        #token computation
-        vp = [command] + map(lambda x:params[x], tokenparams)
-        token_input = "%s;%s;%s;%s;%s" % (secret, user, t, txid, ';'.join(map(str, vp)))
+        # token computation
+        vp = [command] + list(params.keys())
+        token_input = "%s;%s;%s;%s;%s" % (secret, self.user, t, txid, ';'.join(map(str, vp)))
         token = hashlib.sha256(token_input.encode("ascii")).hexdigest()
-        #cbuilding request
-        reqp = [("account", user), ("id", txid), ("token", token), ("timestamp", t)]+params.items()
+        # cbuilding request
+        reqp = {"account": self.user, "id": txid, "token": token, "timestamp": t}
+        reqp.update(params)
         url = "%s/api/%s.json?%s" % (self.domain, command, urllib.parse.urlencode(reqp))  # url
         data = urllib.request.urlopen(url).read()
         return json.loads(data)
@@ -76,7 +81,7 @@ class PrivateVircurex(Market):
     def get_info(self):
         """Get balance"""
         try:
-            res = self.query("getinfo", {})
+            res = self.secure_request("get_balances", {})
             self.p_coin_balance = float(res["return"]["balances_available"][self.p_coin])
             self.s_coin_balance = float(res["return"]["balances_available"][self.s_coin])
         except Exception:

@@ -3,9 +3,9 @@ __author__ = 'alex'
 import requests
 from .market import Market
 
-class VircurexDOGEtoBTC(Market):
+class Vircurex(Market):
     def __init__(self):
-        super(VircurexDOGEtoBTC, self).__init__()
+        super(Vircurex, self).__init__()
         self.update_rate = 60
 
     def update_depth(self):
@@ -30,5 +30,5 @@ class VircurexDOGEtoBTC(Market):
         return {'asks': asks, 'bids': bids}
 
 if __name__ == "__main__":
-    market = VircurexDOGEtoBTC()
+    market = Vircurex()
     print(market.get_ticker())
