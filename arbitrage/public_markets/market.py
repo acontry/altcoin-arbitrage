@@ -2,6 +2,7 @@ import time
 import urllib.request
 import urllib.error
 import urllib.parse
+import requests
 import config
 import logging
 import sys
@@ -30,7 +31,7 @@ class Market(object):
         try:
             self.update_depth()
             self.depth_updated = time.time()
-        except (urllib.error.HTTPError, urllib.error.URLError) as e:
+        except (requests.HTTPError, urllib.error.URLError) as e:
             logging.error("HTTPError, can't update market: %s" % self.name)
             log_exception(logging.DEBUG)
         except Exception as e:

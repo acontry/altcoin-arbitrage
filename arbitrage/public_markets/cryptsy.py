@@ -11,7 +11,7 @@ class Cryptsy(Market):
 
     def update_depth(self):
         #Dogecoin/BTC exchange URL
-        url = 'http://pubapi.cryptsy.com/api.php?method=singlemarketdata&marketid=132'
+        url = 'http://pubapi.cryptsy.com/api.php?method=singleorderdata&marketid=132'
         res = requests.get(url)
         depth = res.json()
         self.depth = self.format_depth(depth)
@@ -21,13 +21,14 @@ class Cryptsy(Market):
         r = []
         for i in orders:
             r.append({'price': float(i['price']), 'amount': float(i['quantity'])})
+        r[:] = [d for d in r if d.get('amount') != 0]
         return r
 
     def format_depth(self, depth):
         bids = self.sort_and_format(
-            depth['return']['markets']['DOGE']['buyorders'], True)
+            depth['return']['DOGE']['buyorders'], True)
         asks = self.sort_and_format(
-            depth['return']['markets']['DOGE']['sellorders'], False)
+            depth['return']['DOGE']['sellorders'], False)
         return {'asks': asks, 'bids': bids}
 
 if __name__ == "__main__":
