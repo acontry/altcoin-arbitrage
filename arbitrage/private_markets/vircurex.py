@@ -22,67 +22,49 @@ class PrivateVircurex(Market):
         self.user = config.vircurex_user
         self.get_info()
 
-    #OLD
-    def query(self, method, req):
-        # generate POST data string
-        req["method"] = method
-        req["nonce"] = int(time.time())
-        post_data = urllib.parse.urlencode(req)
-        # sign it
-        sign = hmac.new(self.secret.encode("ascii"), post_data.encode("ascii"), hashlib.sha512).hexdigest()
-        # extra headers for request
-        headers = {"Sign": sign, "Key": self.key}
-
-        try:
-            res = requests.post(self.url, data=req, headers=headers)
-        except Exception as e:
-            raise Exception("Error sending request to %s - %s" % (self.name, e))
-        try:
-            value = res.json()
-        except Exception as e:
-            raise Exception("Unable to decode response from %s - %s" %
-                            (self.name, e))
-        return value
-
     def secure_request(self, command, params):
         """params is an ordered dictionary of parameters to pass."""
         secret = self.secrets[command]
         t = time.strftime("%Y-%m-%dT%H:%M:%S", time.gmtime())  # UTC time
         txid = "%s-%f" % (t, random.randint(0, 1 << 31))
         txid = hashlib.sha256(txid.encode("ascii")).hexdigest()  # unique transmission ID using random hash
-        # token computation
-        vp = [command] + list(params.keys())
+        # token computation - dict order matters here!
+        vp = [command] + list(params.values())
         token_input = "%s;%s;%s;%s;%s" % (secret, self.user, t, txid, ';'.join(map(str, vp)))
         token = hashlib.sha256(token_input.encode("ascii")).hexdigest()
         # cbuilding request
         reqp = {"account": self.user, "id": txid, "token": token, "timestamp": t}
         reqp.update(params)
-        url = "%s/api/%s.json?%s" % (self.domain, command, urllib.parse.urlencode(reqp))  # url
-        data = urllib.request.urlopen(url).read()
-        return json.loads(data)
+        url = "%s/api/%s.json" % (self.domain, command)
+        data = requests.get(url, params=reqp)
+        return data.json()
 
     #TODO
     def _buy(self, amount, price):
         """Create a buy limit order"""
-        params = {"marketid": self.mkt_id, "ordertype": "Buy", "quantity": amount, "price": price}
-        response = self.query("createorder", params)
-        if response["success"] == 0:
-            raise TradeException(response["error"])
+        params = OrderedDict((("ordertype", "BUY"), ("amount", "{:.8f}".format(amount)),
+                              ("currency1", self.p_coin), ("unitprice", "{:.8f}".format(price)),
+                              ("currency2", self.s_coin)))
+        response = self.secure_request("create_released_order", params)
+        if response["status"] != 0:
+            raise TradeException(response["status"])
 
     #TODO
     def _sell(self, amount, price):
         """Create a sell limit order"""
-        params = {"marketid": self.mkt_id, "ordertype": "Sell", "quantity": amount, "price": price}
-        response = self.query("createorder", params)
-        if response["success"] == 0:
-            raise TradeException(response["error"])
+        params = OrderedDict((("ordertype", "SELL"), ("amount", "{:.8f}".format(amount)),
+                              ("currency1", self.p_coin), ("unitprice", "{:.8f}".format(price)),
+                              ("currency2", self.s_coin)))
+        response = self.secure_request("create_released_order", params)
+        if response["status"] != 0:
+            raise TradeException(response["status"])
 
     #TODO
     def get_info(self):
         """Get balance"""
         try:
             res = self.secure_request("get_balances", {})
-            self.p_coin_balance = float(res["return"]["balances_available"][self.p_coin])
-            self.s_coin_balance = float(res["return"]["balances_available"][self.s_coin])
+            self.p_coin_balance = float(res["balances"][self.p_coin]["availablebalance"])
+            self.s_coin_balance = float(res["balances"][self.s_coin]["availablebalance"])
         except Exception:
             raise Exception("Error getting balance")
