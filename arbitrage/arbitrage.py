@@ -9,6 +9,7 @@ from arbitrer import Arbitrer
 class ArbitrerCLI:
     def __init__(self):
         self.inject_verbose_info()
+        self.arbitrer = []
 
     def inject_verbose_info(self):
         logging.VERBOSE = 15
@@ -64,12 +65,15 @@ class ArbitrerCLI:
         #Turn requests info logging off
         requests_log = logging.getLogger("requests")
         requests_log.setLevel(logging.WARNING)
+
         self.create_arbitrer(args)
         self.exec_command(args)
+
 
 def main():
     cli = ArbitrerCLI()
     cli.main()
+
 
 if __name__ == "__main__":
     main()

@@ -28,20 +28,23 @@ class TraderBot(Observer):
         one."""
         if not self.potential_trades:
             return
-        self.potential_trades.sort(key=lambda x: x[0])
+        # Sort trades by profit, most profitable first
+        self.potential_trades.sort(key=lambda x: x[0], reverse=True)
         # Execute only the best (more profitable)
         self.execute_trade(*self.potential_trades[0][1:])
 
-    def get_min_tradeable_volume(self, buyprice, s_coin_balance, p_coin_balance):
-        min1 = float(s_coin_balance) * (1 - config.balance_margin) / buyprice
-        min2 = float(p_coin_balance) * (1 - config.balance_margin)
+    def max_tradable_volume(self, buy_price, kask, kbid):
+        # We're buying primary coins from the market with kask at buy_price
+        min1 = float(self.clients[kask].s_coin_balance) * (1 - config.balance_margin) / buy_price
+        # We're selling primary coins to the market with kbid
+        min2 = float(self.clients[kbid].p_coin_balance) * (1 - config.balance_margin)
         return min(min1, min2)
 
     def update_balance(self):
         for client in self.clients:
             self.clients[client].get_info()
 
-    def opportunity(self, profit, volume, buyprice, kask, sellprice, kbid, perc,
+    def opportunity(self, profit, market_volume, buyprice, kask, sellprice, kbid, perc,
                     weighted_buyprice, weighted_sellprice):
         if profit < config.profit_thresh or perc < config.perc_thresh:
             logging.verbose("[TraderBot] Profit or profit percentage lower than"
@@ -55,28 +58,24 @@ class TraderBot(Observer):
             logging.warning("[TraderBot] Can't automate this trade, client not"
                             " available: %s", kbid)
             return
-        volume = min(config.max_tx_volume, volume)
 
         # Update client balance
         self.update_balance()
-        max_volume = self.get_min_tradeable_volume(buyprice,
-                                                   self.clients[kask].s_coin_balance,
-                                                   self.clients[kbid].p_coin_balance)
-        volume = min(volume, max_volume, config.max_tx_volume)
-        if volume < config.min_tx_volume:
-            logging.warning("Can't automate this trade, minimum volume "
-                            "transaction not reached %f/%f", volume, config.min_tx_volume)
-            logging.warning("Balance on %s: %f USD - Balance on %s: %f BTC",
-                            kask, self.clients[kask].s_coin_balance, kbid,
-                            self.clients[kbid].p_coin_balance)
+        max_volume_from_balances = self.max_tradable_volume(buyprice, kask, kbid)
+        trade_volume = min(market_volume, max_volume_from_balances, config.max_tx_volume)
+        if trade_volume < config.min_tx_volume:
+            logging.warning("[TraderBot] Can't automate this trade, minimum volume "
+                            "transaction not reached %f/%f", market_volume, config.min_tx_volume)
+            logging.warning("[TraderBot] Balance on %s: %.8f %s - Balance on %s: %f %s",
+                            kask, self.clients[kask].s_coin_balance, config.s_coin, kbid,
+                            self.clients[kbid].p_coin_balance, config.p_coin)
             return
         current_time = time.time()
         if current_time - self.last_trade < self.trade_wait:
-            logging.warn("[TraderBot] Can't automate this trade, last trade " +
-                         "occured %.2f seconds ago" %
-                         (current_time - self.last_trade))
+            logging.warning("[TraderBot] Can't automate this trade, last trade"
+                            " occured %.2f seconds ago", (current_time - self.last_trade))
             return
-        self.potential_trades.append([profit, volume, kask, kbid,
+        self.potential_trades.append([profit, trade_volume, kask, kbid,
                                       weighted_buyprice, weighted_sellprice,
                                       buyprice, sellprice])
 
@@ -86,6 +85,7 @@ class TraderBot(Observer):
     def execute_trade(self, volume, kask, kbid, weighted_buyprice,
                       weighted_sellprice, buyprice, sellprice):
         self.last_trade = time.time()
-        logging.info("Buy @%s %f BTC and sell @%s" % (kask, volume, kbid))
+        logging.info(" [TraderBot] Buy @%s %f %s and sell @%s for %f %sprofit",
+                     kask, volume, config.s_coin, kbid, (sellprice-buyprice)*volume, config.s_coin)
         self.clients[kask].buy(volume, buyprice)
         self.clients[kbid].sell(volume, sellprice)

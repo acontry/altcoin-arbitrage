@@ -22,7 +22,7 @@ class MockMarket(object):
                 pass
 
     def buy(self, volume, price):
-        logging.info("execute buy %f %s @ %f on %s" %
+        logging.info("[TraderBotSim] Execute buy %f %s @ %f on %s" %
                      (volume, config.p_coin, price * 10**8, self.name))
         self.s_coin_balance -= price * volume
         self.p_coin_balance += volume - volume * self.fee
@@ -30,7 +30,7 @@ class MockMarket(object):
             self.save()
 
     def sell(self, volume, price):
-        logging.info("execute sell %f %s @ %f on %s" %
+        logging.info("[TraderBotSim] Execute sell %f %s @ %f on %s" %
                      (volume, config.p_coin, price*10**8, self.name))
         self.p_coin_balance -= volume
         self.s_coin_balance += price * volume - price * volume * self.fee
@@ -68,6 +68,13 @@ class TraderBotSim(TraderBot):
         self.trade_wait = 120
         self.last_trade = 0
 
+    def max_tradable_volume(self, buy_price, kask, kbid):
+        # We're buying primary coins from the market with kask at buy_price
+        min1 = float(self.clients[kask].s_coin_balance) * (1 - config.balance_margin) / buy_price
+        # We're selling primary coins to the market with kbid
+        min2 = float(self.clients[kbid].p_coin_balance) * (1 - config.balance_margin)
+        return min(min1, min2)
+
     def total_balance(self, price):
         market_balances = [i.balance_total(
             price) for i in set(self.clients.values())]
@@ -78,6 +85,7 @@ class TraderBotSim(TraderBot):
                       buyprice, sellprice):
         self.clients[kask].buy(volume, buyprice)
         self.clients[kbid].sell(volume, sellprice)
+        logging.info("[TraderBotSim] Profit: %f %s", (sellprice-buyprice)*volume, config.s_coin)
 
 if __name__ == "__main__":
     t = TraderBotSim()
