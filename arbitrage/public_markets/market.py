@@ -5,7 +5,6 @@ import urllib.parse
 import requests
 import config
 import logging
-import sys
 from utils import log_exception
 
 class Market(object):
@@ -13,6 +12,7 @@ class Market(object):
         self.name = self.__class__.__name__
         self.pCoin = config.p_coin
         self.sCoin = config.s_coin
+        self.depth = {}
         self.depth_updated = 0
         self.update_rate = 60
 

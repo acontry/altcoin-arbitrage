@@ -3,7 +3,6 @@ __author__ = 'alex'
 import requests
 from .market import Market
 
-#http://pubapi.cryptsy.com/api.php?method=singlemarketdata&marketid=132
 class Cryptsy(Market):
     def __init__(self):
         super(Cryptsy, self).__init__()
