@@ -8,11 +8,11 @@ import json
 
 
 class MockMarket(object):
-    def __init__(self, name, fee=0, usd_balance=500., btc_balance=15., persistent=True):
+    def __init__(self, name, fee=0, s_coin_balance=0.05, p_coin_balance=50000., persistent=True):
         self.name = name
         self.filename = "traderbot-sim-" + name + ".json"
-        self.usd_balance = usd_balance
-        self.btc_balance = btc_balance
+        self.s_coin_balance = s_coin_balance
+        self.p_coin_balance = p_coin_balance
         self.fee = fee
         self.persistent = persistent
         if self.persistent:
@@ -22,32 +22,32 @@ class MockMarket(object):
                 pass
 
     def buy(self, volume, price):
-        logging.info("execute buy %f BTC @ %f on %s" %
-                     (volume, price, self.name))
-        self.usd_balance -= price * volume
-        self.btc_balance += volume - volume * self.fee
+        logging.info("execute buy %f %s @ %f on %s" %
+                     (volume, config.p_coin, price * 10**8, self.name))
+        self.s_coin_balance -= price * volume
+        self.p_coin_balance += volume - volume * self.fee
         if self.persistent:
             self.save()
 
     def sell(self, volume, price):
-        logging.info("execute sell %f BTC @ %f on %s" %
-                     (volume, price, self.name))
-        self.btc_balance -= volume
-        self.usd_balance += price * volume - price * volume * self.fee
+        logging.info("execute sell %f %s @ %f on %s" %
+                     (volume, config.p_coin, price*10**8, self.name))
+        self.p_coin_balance -= volume
+        self.s_coin_balance += price * volume - price * volume * self.fee
         if self.persistent:
             self.save()
 
     def load(self):
         data = json.load(open(self.filename, "r"))
-        self.usd_balance = data["usd"]
-        self.btc_balance = data["btc"]
+        self.s_coin_balance = data[config.s_coin]
+        self.p_coin_balance = data[config.p_coin]
 
     def save(self):
-        data = {'usd': self.usd_balance, 'btc': self.btc_balance}
+        data = {config.s_coin: self.s_coin_balance, config.p_coin: self.p_coin_balance}
         json.dump(data, open(self.filename, "w"))
 
     def balance_total(self, price):
-        return self.usd_balance + self.btc_balance * price
+        return self.s_coin_balance + self.p_coin_balance * price
 
     def get_info(self):
         pass
@@ -55,17 +55,15 @@ class MockMarket(object):
 
 class TraderBotSim(TraderBot):
     def __init__(self):
-        self.mtgox = MockMarket("mtgox", 0.006)  # 0.6% fee
-        self.btcentral = MockMarket("bitcoin-central", 0.00489)
-        self.intersango = MockMarket("intersango", 0.0065)
-        self.bitcoin24 = MockMarket("bitcoin24", 0)
-        self.bitstamp = MockMarket("bitstamp", 0.005)  # 0.5% fee
+        self.cryptsy = MockMarket("cryptsy", 0.002)  # 0.2% fee
+        self.bterdogetobtc = MockMarket("bterdogetobtc", 0.002)
+        self.vircurex = MockMarket("vircurex", 0.002)
         self.clients = {
-            "MtGoxEUR": self.mtgox,
-            "MtGoxUSD": self.mtgox,
-            "BitstampUSD": self.bitstamp,
+            "Cryptsy": self.cryptsy,
+            "BterDOGEtoBTC": self.bterdogetobtc,
+            "Vircurex": self.vircurex,
         }
-        self.profit_thresh = 1  # in EUR
+        self.profit_thresh = 0  # in EUR
         self.perc_thresh = 0.6  # in %
         self.trade_wait = 120
         self.last_trade = 0
