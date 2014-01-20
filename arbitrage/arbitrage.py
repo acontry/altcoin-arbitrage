@@ -3,7 +3,6 @@
 import logging
 import argparse
 import sys
-import requests
 from arbitrer import Arbitrer
 
 
@@ -62,6 +61,9 @@ class ArbitrerCLI:
             level = logging.DEBUG
         logging.basicConfig(format='%(asctime)s [%(levelname)s] %(message)s',
                             level=level)
+        #Turn requests info logging off
+        requests_log = logging.getLogger("requests")
+        requests_log.setLevel(logging.WARNING)
         self.create_arbitrer(args)
         self.exec_command(args)
 
