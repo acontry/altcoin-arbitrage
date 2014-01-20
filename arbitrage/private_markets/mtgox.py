@@ -34,7 +34,7 @@ class PrivateMtGox(Market):
 
         self.key = config.mtgox_key
         self.secret = config.mtgox_secret
-        self.get_info()
+        self.get_balances()
 
     def _create_nonce(self):
         return int(time.time() * 1000000)
@@ -146,7 +146,7 @@ class PrivateMtGoxEUR(PrivateMtGox):
                          "https://mtgox.com/api/1/BTCEUR/private/order/add"}
         self.currency = "EUR"
 
-    def get_info(self):
+    def get_balances(self):
         params = [("nonce", self._create_nonce())]
         response = self._send_request(self.info_url, params)
         if response and "result" in response and response["result"] == "success":
@@ -169,7 +169,7 @@ class PrivateMtGoxUSD(PrivateMtGox):
                          "https://mtgox.com/api/1/BTCUSD/private/order/add"}
         self.currency = "USD"
 
-    def get_info(self):
+    def get_balances(self):
         params = [("nonce", self._create_nonce())]
         response = self._send_request(self.info_url, params)
         if response and "result" in response and response["result"] == "success":

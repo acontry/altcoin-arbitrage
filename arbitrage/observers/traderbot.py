@@ -3,17 +3,15 @@ import config
 import time
 from .observer import Observer
 from .emailer import send_email
-from private_markets import mtgoxeur
-from private_markets import mtgoxusd
-from private_markets import bitstampusd
+from private_markets import cryptsy
+from private_markets import vircurex
 
 
 class TraderBot(Observer):
     def __init__(self):
         self.clients = {
-            "MtGoxEUR": mtgoxeur.PrivateMtGoxEUR(),
-            "MtGoxUSD": mtgoxusd.PrivateMtGoxUSD(),
-            "BitstampUSD": bitstampusd.PrivateBitstampUSD(),
+            "Cryptsy": cryptsy.PrivateCryptsy(),
+            "Vircurex": vircurex.PrivateVircurex(),
         }
         self.trade_wait = 120  # in seconds
         self.last_trade = 0
@@ -42,7 +40,7 @@ class TraderBot(Observer):
 
     def update_balance(self):
         for client in self.clients:
-            self.clients[client].get_info()
+            self.clients[client].get_balances()
 
     def opportunity(self, profit, market_volume, buyprice, kask, sellprice, kbid, perc,
                     weighted_buyprice, weighted_sellprice):
@@ -85,7 +83,7 @@ class TraderBot(Observer):
     def execute_trade(self, volume, kask, kbid, weighted_buyprice,
                       weighted_sellprice, buyprice, sellprice):
         self.last_trade = time.time()
-        logging.info(" [TraderBot] Buy @%s %f %s and sell @%s for %f %sprofit",
-                     kask, volume, config.s_coin, kbid, (sellprice-buyprice)*volume, config.s_coin)
+        logging.info(" [TraderBot] Buy @%s %f %s and sell @%s for %f %s profit",
+                     kask, volume, config.p_coin, kbid, (sellprice-buyprice)*volume, config.s_coin)
         self.clients[kask].buy(volume, buyprice)
         self.clients[kbid].sell(volume, sellprice)

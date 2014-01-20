@@ -26,7 +26,7 @@ class PrivateBitcoinCentral(Market):
         self.username = config.bitcoincentral_username
         self.password = config.bitcoincentral_password
         self.currency = "EUR"
-        self.get_info()
+        self.get_balances()
 
     def _create_nonce(self):
         return int(time.time() * 1000000)
@@ -82,7 +82,7 @@ class PrivateBitcoinCentral(Market):
     def deposit(self):
         return config.bitcoincentral_address
 
-    def get_info(self):
+    def get_balances(self):
         response = self._send_request(self.balance_url)
         if response:
             self.p_coin_balance = response["BTC"]
@@ -91,5 +91,5 @@ class PrivateBitcoinCentral(Market):
 
 if __name__ == "__main__":
     market = PrivateBitcoinCentral()
-    market.get_info()
+    market.get_balances()
     print(market)

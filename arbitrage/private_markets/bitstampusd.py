@@ -26,7 +26,7 @@ class PrivateBitstampUSD(Market):
         self.username = config.bitstamp_username
         self.password = config.bitstamp_password
         self.currency = "USD"
-        self.get_info()
+        self.get_balances()
 
     def _send_request(self, url, params={}, extra_headers=None):
         headers = {
@@ -63,7 +63,7 @@ class PrivateBitstampUSD(Market):
         if "error" in response:
             raise TradeException(response["error"])
 
-    def get_info(self):
+    def get_balances(self):
         """Get balance"""
         response = self._send_request(self.balance_url)
         if response:

@@ -14,7 +14,7 @@ class PrivateMtGoxEUR(PrivateMtGox):
                          "https://mtgox.com/api/1/BTCEUR/private/order/add"}
         self.currency = "EUR"
 
-    def get_info(self):
+    def get_balances(self):
         params = [("nonce", self._create_nonce())]
         response = self._send_request(self.info_url, params)
         if response and "result" in response and response["result"] == "success":

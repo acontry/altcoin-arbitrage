@@ -21,14 +21,14 @@ class Market:
 
     def buy(self, amount, price):
         """Orders are always priced in secondary coin"""
-        logging.info("Buy %f %s at %f %s @%s" % (amount, self.p_coin, price,
+        logging.info("Buy %.8f %s at %.8f %s @%s" % (amount, self.p_coin, price,
                                                  self.s_coin, self.name))
         self._buy(amount, price)
 
 
     def sell(self, amount, price):
         """Orders are always priced in secondary coin"""
-        logging.info("Sell %f %s at %f %s @%s" % (amount, self.p_coin, price,
+        logging.info("Sell %.8f %s at %.8f %s @%s" % (amount, self.p_coin, price,
                                                   self.s_coin, self.name))
         self._sell(amount, price)
 
@@ -44,5 +44,5 @@ class Market:
     def withdraw(self, amount, address):
         raise NotImplementedError("%s.sell(self, amount, price)" % self.name)
 
-    def get_info(self):
+    def get_balances(self):
         raise NotImplementedError("%s.sell(self, amount, price)" % self.name)

@@ -20,7 +20,7 @@ class PrivateVircurex(Market):
         super().__init__()
         self.secrets = config.vircurex_secrets
         self.user = config.vircurex_user
-        self.get_info()
+        self.get_balances()
 
     def secure_request(self, command, params):
         """params is an ordered dictionary of parameters to pass."""
@@ -45,7 +45,11 @@ class PrivateVircurex(Market):
         params = OrderedDict((("ordertype", "BUY"), ("amount", "{:.8f}".format(amount)),
                               ("currency1", self.p_coin), ("unitprice", "{:.8f}".format(price)),
                               ("currency2", self.s_coin)))
-        response = self.secure_request("create_released_order", params)
+        response = self.secure_request("create_order", params)
+        if response["status"] != 0:
+            raise TradeException(response["status"])
+        params = {"orderid": response["orderid"]}
+        response = self.secure_request("release_order", params)
         if response["status"] != 0:
             raise TradeException(response["status"])
 
@@ -58,9 +62,13 @@ class PrivateVircurex(Market):
         response = self.secure_request("create_released_order", params)
         if response["status"] != 0:
             raise TradeException(response["status"])
+        params = {"orderid": response["orderid"]}
+        response = self.secure_request("release_order", params)
+        if response["status"] != 0:
+            raise TradeException(response["status"])
 
     #TODO
-    def get_info(self):
+    def get_balances(self):
         """Get balance"""
         try:
             res = self.secure_request("get_balances", {})
