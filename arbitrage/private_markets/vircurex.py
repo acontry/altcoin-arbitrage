@@ -14,7 +14,7 @@ import config
 
 
 class PrivateVircurex(Market):
-    domain = "https://vircurex.com"
+    domain = "https://api.vircurex.com"
 
     def __init__(self):
         super().__init__()

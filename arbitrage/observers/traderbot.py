@@ -65,7 +65,7 @@ class TraderBot(Observer):
         trade_volume = min(market_volume, max_volume_from_balances, config.max_tx_volume)
         if trade_volume < config.min_tx_volume:
             logging.warning("[TraderBot] Can't automate this trade, minimum volume "
-                            "transaction not reached %f/%f", market_volume, config.min_tx_volume)
+                            "transaction not reached %f/%f", trade_volume, config.min_tx_volume)
             logging.warning("[TraderBot] Balance on %s: %.8f %s - Balance on %s: %f %s",
                             kask, self.clients[kask].s_coin_balance, config.s_coin, kbid,
                             self.clients[kbid].p_coin_balance, config.p_coin)
