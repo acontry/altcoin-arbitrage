@@ -49,7 +49,7 @@ class MockMarket(object):
     def balance_total(self, price):
         return self.s_coin_balance + self.p_coin_balance * price
 
-    def get_info(self):
+    def get_balances(self):
         pass
 
 

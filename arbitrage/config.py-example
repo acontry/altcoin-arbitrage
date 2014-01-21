@@ -1,7 +1,7 @@
 # watch the following markets
 # ["MtGoxEUR", "BitcoinCentralEUR", "IntersangoEUR", "Bitcoin24EUR",
 # "BitstampEUR", "BtceUSD", "MtGoxUSD", "BitfloorUSD", "BitstampUSD"]
-markets = ["VircurexDOGEtoBTC", "BterDOGEtoBTC", "Cryptsy"] # "CoinsEDOGEtoBTC"]
+markets = ["Vircurex", "Bter", "Cryptsy"] # "CoinsEDOGEtoBTC"]
 
 #Primary and secondary coins to trade
 p_coin = 'DOGE'
@@ -19,6 +19,9 @@ refresh_rate = 60
 # Access to Private APIs
 cryptsy_key = "KEY"
 cryptsy_secret = "SECRET"
+
+bter_key = "KEY"
+bter_secret = "SECRET"
 
 vircurex_secrets = {"get_balance": "SECRET",
                     "create_order": "SECRET",
