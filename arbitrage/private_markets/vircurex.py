@@ -71,6 +71,5 @@ class PrivateVircurex(Market):
             self.p_coin_balance = float(res["balances"][self.p_coin]["availablebalance"])
             self.s_coin_balance = float(res["balances"][self.s_coin]["availablebalance"])
 
-            self._sell(1000, 0.00000500)
         except Exception:
             raise Exception("Error getting balance")
