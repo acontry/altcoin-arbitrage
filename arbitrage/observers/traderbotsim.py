@@ -56,11 +56,11 @@ class MockMarket(object):
 class TraderBotSim(TraderBot):
     def __init__(self):
         self.cryptsy = MockMarket("cryptsy", 0.002)  # 0.2% fee
-        self.bterdogetobtc = MockMarket("bterdogetobtc", 0.002)
+        self.bter = MockMarket("bter", 0.002)
         self.vircurex = MockMarket("vircurex", 0.002)
         self.clients = {
             "Cryptsy": self.cryptsy,
-            "BterDOGEtoBTC": self.bterdogetobtc,
+            "Bter": self.bter,
             "Vircurex": self.vircurex,
         }
         self.profit_thresh = 0  # in EUR

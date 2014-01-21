@@ -16,7 +16,11 @@ class PrivateBter(Market):
         super().__init__()
         self.key = config.bter_key
         self.secret = config.bter_secret
-        self.get_balances()
+        try:
+            self.get_balances()
+        except Exception:
+            self.s_coin_balance = 0
+            self.p_coin_balance = 0
 
     def query(self, method, req):
         # generate POST data string

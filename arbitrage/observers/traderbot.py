@@ -41,7 +41,11 @@ class TraderBot(Observer):
 
     def update_balance(self):
         for client in self.clients:
-            self.clients[client].get_balances()
+            try:
+                self.clients[client].get_balances()
+            except:
+                self.clients[client].p_coin_balance = 0
+                self.clients[client].s_coin_balance = 0
 
     def opportunity(self, profit, market_volume, buyprice, kask, sellprice, kbid, perc,
                     weighted_buyprice, weighted_sellprice):
