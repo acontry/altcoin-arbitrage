@@ -2,13 +2,10 @@
 
 from .market import Market, TradeException
 import time
-import base64
 import hmac
 import urllib.parse
 import requests
 import hashlib
-import sys
-import json
 import config
 
 

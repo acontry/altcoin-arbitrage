@@ -2,13 +2,10 @@
 
 from .market import Market, TradeException
 import time
-import base64
 import hmac
 import urllib.parse
 import requests
 import hashlib
-import sys
-import json
 import config
 
 
@@ -43,17 +40,19 @@ class PrivateBter(Market):
 
     def _buy(self, amount, price):
         """Create a buy limit order"""
-        params = {"marketid": self.mkt_id, "ordertype": "Buy", "quantity": amount, "price": price}
-        response = self.query("createorder", params)
-        if response["success"] == 0:
-            raise TradeException(response["error"])
+        currency_pair = self.p_coin.lower() + "_" + self.s_coin.lower()
+        req = {"pair": currency_pair, "type": "BUY", "rate": price, "amount": amount}
+        response = self.query("placeorder", req)
+        if response["result"] != True:
+            raise TradeException(response["msg"])
 
     def _sell(self, amount, price):
         """Create a sell limit order"""
-        params = {"marketid": self.mkt_id, "ordertype": "Sell", "quantity": amount, "price": price}
-        response = self.query("createorder", params)
-        if response["success"] == 0:
-            raise TradeException(response["error"])
+        currency_pair = self.p_coin.lower() + "_" + self.s_coin.lower()
+        req = {"pair": currency_pair, "type": "BUY", "rate": price, "amount": amount}
+        response = self.query("placeorder", req)
+        if response["result"] != True:
+            raise TradeException(response["msg"])
 
     def get_balances(self):
         """Get balance of primary coin and secondary coin"""

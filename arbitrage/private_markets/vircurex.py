@@ -2,14 +2,10 @@
 
 from .market import Market, TradeException
 import time
-import hmac
-import urllib.parse
-import urllib.request
 import requests
 import hashlib
 import random
 from collections import OrderedDict
-import json
 import config
 
 
