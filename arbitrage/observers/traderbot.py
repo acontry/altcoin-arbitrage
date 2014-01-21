@@ -5,13 +5,14 @@ from .observer import Observer
 from .emailer import send_email
 from private_markets import cryptsy
 from private_markets import vircurex
-
+from private_markets import bter
 
 class TraderBot(Observer):
     def __init__(self):
         self.clients = {
             "Cryptsy": cryptsy.PrivateCryptsy(),
             "Vircurex": vircurex.PrivateVircurex(),
+            "Bter": bter.PrivateBter()
         }
         self.trade_wait = 120  # in seconds
         self.last_trade = 0
