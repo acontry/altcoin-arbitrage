@@ -71,7 +71,7 @@ class PrivateCryptsy(Market):
             raise TradeException(response["error"])
 
     def get_balances(self):
-        """Get balance"""
+        """Get balance of primary coin and secondary coin"""
         try:
             res = self.query("getinfo", {})
             self.p_coin_balance = float(res["return"]["balances_available"][self.p_coin])

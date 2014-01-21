@@ -43,11 +43,11 @@ bitstamp_username = "FIXME"
 bitstamp_password = "FIXME"
 
 # SafeGuards
-max_tx_volume = 10  # in BTC
-min_tx_volume = 1  # in BTC
-balance_margin = 0.05  # 5%
-profit_thresh = 1  # in EUR
-perc_thresh = 2  # in %
+max_tx_volume = 10000  # in primary coin
+min_tx_volume = 100  # in primary coin
+balance_margin = 0.005  # Always leave this fraction of coins in an account when trading
+profit_thresh = 0  # in secondary coin?
+perc_thresh = 1  # in % - don't set lower than buy/sell fee %
 
 #### Emailer Observer Config
 smtp_host = 'FIXME'

@@ -41,19 +41,6 @@ class PrivateBter(Market):
                             (self.name, e))
         return value
 
-      # get market ID (return None if not found)
-    def get_market_id(self, p_coin, s_coin):
-        mkt_id = 0
-        try:
-            res = self.query("getmarkets", {})
-            for i, market in enumerate(res["return"]):
-                if (market["primary_currency_code"].upper() == p_coin.upper() and
-                            market["secondary_currency_code"].upper() == s_coin.upper()):
-                    mkt_id = market["marketid"]
-            return mkt_id
-        except Exception:
-            return None
-
     def _buy(self, amount, price):
         """Create a buy limit order"""
         params = {"marketid": self.mkt_id, "ordertype": "Buy", "quantity": amount, "price": price}
@@ -69,10 +56,10 @@ class PrivateBter(Market):
             raise TradeException(response["error"])
 
     def get_balances(self):
-        """Get balance"""
+        """Get balance of primary coin and secondary coin"""
         try:
             res = self.query("getfunds", {})
-            self.p_coin_balance = float(res["return"]["balances_available"][self.p_coin])
-            self.s_coin_balance = float(res["return"]["balances_available"][self.s_coin])
+            self.p_coin_balance = float(res["available_funds"][self.p_coin])
+            self.s_coin_balance = float(res["available_funds"][self.s_coin])
         except Exception:
             raise Exception("Error getting balance")
