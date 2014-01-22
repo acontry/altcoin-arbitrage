@@ -4,9 +4,11 @@ from .market import Market, TradeException
 import time
 import hmac
 import urllib.parse
+import urllib.request
 import requests
 import hashlib
 import config
+from datetime import datetime
 
 
 class PrivateBter(Market):
@@ -30,9 +32,9 @@ class PrivateBter(Market):
         sign = hmac.new(self.secret.encode("ascii"), post_data.encode("ascii"), hashlib.sha512).hexdigest()
         # extra headers for request
         headers = {"Sign": sign, "Key": self.key}
-
+        full_url = self.url + method
         try:
-            res = requests.post(self.url+method, data=req, headers=headers)
+            res = requests.post(full_url, data=req, headers=headers)
         except Exception as e:
             raise Exception("Error sending request to %s - %s" % (self.name, e))
         try:

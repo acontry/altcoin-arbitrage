@@ -17,9 +17,11 @@ class Market(object):
         self.update_rate = 60
 
     def get_depth(self):
+        # If the update rate dictates that it is time to update the market, do it
         timediff = time.time() - self.depth_updated
         if timediff > self.update_rate:
             self.ask_update_depth()
+        # If the last updated time indicates that the market is expired, set the bids/asks to 0
         timediff = time.time() - self.depth_updated
         if timediff > config.market_expiration_time:
             logging.warning('Market: %s order book is expired', self.name)

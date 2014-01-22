@@ -6,6 +6,7 @@ from .emailer import send_email
 from private_markets import cryptsy
 from private_markets import vircurex
 from private_markets import bter
+import concurrent.futures
 
 class TraderBot(Observer):
     def __init__(self):
@@ -19,8 +20,9 @@ class TraderBot(Observer):
         self.potential_trades = []
 
     def begin_opportunity_finder(self, depths):
-        """Begin with no potential trades."""
+        """Begin with no potential trades and update market balances."""
         self.potential_trades = []
+        self.update_balances()
 
     def end_opportunity_finder(self):
         """Sort potential trades by profit, then execute the most profitable
@@ -39,7 +41,7 @@ class TraderBot(Observer):
         min2 = float(self.clients[kbid].p_coin_balance) * (1 - config.balance_margin)
         return min(min1, min2)
 
-    def update_balance(self):
+    def update_balances(self):
         for client in self.clients:
             try:
                 self.clients[client].get_balances()
@@ -62,8 +64,8 @@ class TraderBot(Observer):
                             " available: %s", kbid)
             return
 
-        # Update client balance
-        self.update_balance()
+        # Used to update client balance here, now do it in begin_opportunity_finder()
+
         max_volume_from_balances = self.max_tradable_volume(buyprice, kask, kbid)
         trade_volume = min(market_volume, max_volume_from_balances, config.max_tx_volume)
         if trade_volume < config.min_tx_volume:
@@ -90,5 +92,9 @@ class TraderBot(Observer):
         self.last_trade = time.time()
         logging.info(" [TraderBot] Buy @%s %f %s and sell @%s for %f %s profit",
                      kask, volume, config.p_coin, kbid, (sellprice-buyprice)*volume, config.s_coin)
-        self.clients[kask].buy(volume, buyprice)
-        self.clients[kbid].sell(volume, sellprice)
+        #self.clients[kask].buy(volume, buyprice)
+        #self.clients[kbid].sell(volume, sellprice)
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+            executor.submit(self.clients[kask].buy, volume, buyprice)
+            executor.submit(self.clients[kbid].sell, volume, sellprice)
