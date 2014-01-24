@@ -6,10 +6,9 @@ import urllib.parse
 import json
 from .market import Market
 
-#http://pubapi.cryptsy.com/api.php?method=singlemarketdata&marketid=132
-class CoinsEDOGEtoBTC(Market):
+class CoinsE(Market):
     def __init__(self):
-        super(CoinsEDOGEtoBTC, self).__init__()
+        super(CoinsE, self).__init__()
         self.update_rate = 60
 
     def update_depth(self):
@@ -29,12 +28,13 @@ class CoinsEDOGEtoBTC(Market):
     def format_depth(self, depth):
         bids = self.sort_and_format(
             depth['marketdepth']['bids'], True)
-        # Coins-e's list of bids is broken and contains a fake bid at 6.9e-7 BTC, so remove it.
-        bids[:] = [d for d in bids if d.get('price') != 6.9e-7]
         asks = self.sort_and_format(
             depth['marketdepth']['asks'], False)
+
+        # Only keep asks priced above bids
+        asks[:] = [ask for ask in asks if ask['price'] >= bids[0]['price']]
         return {'asks': asks, 'bids': bids}
 
 if __name__ == "__main__":
-    market = CoinsEDOGEtoBTC()
+    market = CoinsE()
     print(market.get_ticker())

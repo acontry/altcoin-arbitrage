@@ -25,7 +25,8 @@ class Cryptsy(Market):
         r = []
         for i in orders:
             r.append({'price': float(i[0]), 'amount': float(i[1])})
-        r[:] = [d for d in r if d.get('amount') >= 10.0]
+        # Remove any bids/asks below a volume of 10,000
+        r[:] = [d for d in r if d.get('amount') >= 10000.0]
         return r
 
     def format_depth(self, depth):
