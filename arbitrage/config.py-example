@@ -32,6 +32,9 @@ vircurex_secrets = {"get_balance": "SECRET",
                     }
 vircurex_user = "USER"
 
+coinse_key = "KEY"
+coinse_secret = "SECRET"
+
 mtgox_key = "FIXME"
 mtgox_secret = "FIXME"
 

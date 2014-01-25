@@ -3,6 +3,7 @@ __author__ = 'alex'
 import urllib.request
 import urllib.error
 import urllib.parse
+import requests
 import json
 from .market import Market
 
@@ -14,8 +15,8 @@ class CoinsE(Market):
     def update_depth(self):
         #Dogecoin/BTC exchange URL
         url = 'https://www.coins-e.com/api/v2/market/DOGE_BTC/depth/'
-        res = urllib.request.urlopen(url)
-        depth = json.loads(res.read().decode('utf8'))
+        res = requests.get(url)
+        depth = res.json()
         self.depth = self.format_depth(depth)
 
     def sort_and_format(self, orders, reverse=False):
