@@ -8,6 +8,7 @@ class Cryptsy(Market):
     def __init__(self):
         super(Cryptsy, self).__init__()
         self.update_rate = 60
+        self.fees = {"buy": {"fee": 0.002, "coin": "s_coin"}, "sell": {"fee": 0.003, "coin": "s_coin"}}
         # Hack to use private market method to update cryptsy depths
         self.a = cryptsy.PrivateCryptsy()
 

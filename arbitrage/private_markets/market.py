@@ -13,6 +13,7 @@ class Market:
         self.s_coin = config.s_coin
         self.p_coin_balance = 0.0
         self.s_coin_balance = 0.0
+        self.fees = {"buy": {"fee": 0.002, "coin": "p_coin"}, "sell": {"fee": 0.002, "coin": "s_coin"}}
 
     def __str__(self):
         return "%s: %s" % (self.name,
@@ -22,7 +23,7 @@ class Market:
     def buy(self, amount, price):
         """Orders are always priced in secondary coin"""
         logging.info("Buy %.8f %s at %.8f %s @%s" % (amount, self.p_coin, price,
-                                                 self.s_coin, self.name))
+                                                     self.s_coin, self.name))
         self._buy(amount, price)
 
 

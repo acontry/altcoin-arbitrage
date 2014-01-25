@@ -10,11 +10,13 @@ from utils import log_exception
 class Market(object):
     def __init__(self):
         self.name = self.__class__.__name__
-        self.pCoin = config.p_coin
-        self.sCoin = config.s_coin
+        self.p_coin = config.p_coin
+        self.s_coin = config.s_coin
         self.depth = {}
         self.depth_updated = 0
+        # Configurable parameters
         self.update_rate = 60
+        self.fees = {"buy": {"fee": 0.002, "coin": "p_coin"}, "sell": {"fee": 0.002, "coin": "s_coin"}}
 
     def get_depth(self):
         # If the update rate dictates that it is time to update the market, do it

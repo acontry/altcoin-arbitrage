@@ -17,6 +17,7 @@ class PrivateCryptsy(Market):
         self.key = config.cryptsy_key
         self.secret = config.cryptsy_secret
         self.mkt_id = self.get_market_id(self.p_coin, self.s_coin)
+        self.fees = {"buy": {"fee": 0.002, "coin": "s_coin"}, "sell": {"fee": 0.003, "coin": "s_coin"}}
         self.get_balances()
 
     def query(self, method, req):
