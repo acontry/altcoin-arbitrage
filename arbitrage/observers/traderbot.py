@@ -1,3 +1,4 @@
+import decimal
 import logging
 import config
 import time
@@ -92,9 +93,20 @@ class TraderBot(Observer):
         self.last_trade = time.time()
         logging.info(" [TraderBot] Buy @%s %f %s and sell @%s for %f %s profit",
                      kask, volume, config.p_coin, kbid, (sellprice-buyprice)*volume, config.s_coin)
-        #self.clients[kask].buy(volume, buyprice)
-        #self.clients[kbid].sell(volume, sellprice)
 
+        # Put in buy and sell orders at least profitable prices possible so that they have the best
+        # chance of executing
+        buy_fee = self.clients[kask].fees["buy"]["fee"]
+        sell_fee = self.clients[kbid].fees["sell"]["fee"]
+        price_diff = (sellprice * (1 - sell_fee) - buyprice * (1 - buy_fee)) / \
+            (2 + buy_fee - sell_fee)
+        # Round price_diff down to nearest Satoshi
+        price_diff = decimal.Decimal(price_diff).quantize(decimal.Decimal('1.00000000'),
+                                                          rounding=decimal.ROUND_FLOOR)
+        price_diff = float(price_diff)
+        buyprice_trade = buyprice + price_diff
+        sellprice_trade = sellprice - price_diff
+        volume = min(self.max_tradable_volume(buyprice_trade, kask, kbid), volume)
         with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
-            executor.submit(self.clients[kask].buy, volume, buyprice)
-            executor.submit(self.clients[kbid].sell, volume, sellprice)
+            executor.submit(self.clients[kask].buy, volume, buyprice_trade)
+            executor.submit(self.clients[kbid].sell, volume, sellprice_trade)
