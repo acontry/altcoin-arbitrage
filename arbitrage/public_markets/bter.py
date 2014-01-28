@@ -28,6 +28,23 @@ class Bter(Market):
             depth['bids'], True)
         asks = self.sort_and_format(
             depth['asks'], False)
+
+        # Bid prices should be less than ask prices, so go through depths to "execute" trades and clean
+        # up the bids and asks
+        while bids[0]['price'] >= asks[0]['price']:
+            # If bid amount is greater than ask amount, update bid volume and remove "completed" ask
+            if bids[0]['amount'] > asks[0]['amount']:
+                bids[0]['amount'] -= asks[0]['amount']
+                asks.remove(asks[0])
+            # If ask amount is greater than bid amount, do the opposite
+            elif bids[0]['amount'] < asks[0]['amount']:
+                asks[0]['amount'] -= bids[0]['amount']
+                bids.remove(bids[0])
+            # If the volumes are miraculously equal
+            else:
+                asks.remove(asks[0])
+                bids.remove(bids[0])
+
         return {'asks': asks, 'bids': bids}
 
 if __name__ == "__main__":
