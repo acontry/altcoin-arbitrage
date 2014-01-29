@@ -67,6 +67,5 @@ class PrivateBter(Market):
             res = self.query("getfunds", {})
             self.p_coin_balance = float(res["available_funds"][self.p_coin])
             self.s_coin_balance = float(res["available_funds"][self.s_coin])
-            self.sell
         except Exception:
             raise Exception("Error getting balance")
