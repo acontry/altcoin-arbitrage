@@ -11,7 +11,7 @@ from concurrent.futures import ThreadPoolExecutor, wait
 
 class Arbitrer(object):
     def __init__(self):
-        self.markets = []
+        self.markets = {}
         self.observers = []
         self.depths = {}
         self.market_names = []
@@ -27,7 +27,7 @@ class Arbitrer(object):
             exec('import public_markets.' + market_name.lower())
             market = eval('public_markets.' + market_name.lower() + '.' +
                           market_name + '()')
-            self.markets.append(market)
+            self.markets[market_name] = market
 
     def init_observers(self, _observers):
         """Initialize observers by importing observer classes."""
@@ -51,6 +51,8 @@ class Arbitrer(object):
 
         trade_vol = min(ask_vol, bid_vol, config.max_tx_volume)
         profit = (sell_price - buy_price) * trade_vol
+
+        #buy_fee = self.markets
 
         # Set weighted prices to the same as prices
         return profit, trade_vol, buy_price, sell_price, buy_price, sell_price
@@ -83,7 +85,7 @@ class Arbitrer(object):
     def update_depths(self):
         depths = {}
         futures = []
-        for market in self.markets:
+        for market_name, market in self.markets.items():
             futures.append(self.threadpool.submit(self.__get_market_depth,
                                                   market, depths))
         wait(futures, timeout=20)
@@ -91,7 +93,7 @@ class Arbitrer(object):
 
     def tickers(self):
         """Update markets and print tickers to verbose log."""
-        for market in self.markets:
+        for market_name, market in self.markets.items():
             logging.verbose("ticker: " + market.name + " - " + str(
                 market.get_ticker()))
 
