@@ -14,6 +14,7 @@ class Market:
         self.p_coin_balance = 0.0
         self.s_coin_balance = 0.0
         self.fees = {"buy": {"fee": 0.002, "coin": "p_coin"}, "sell": {"fee": 0.002, "coin": "s_coin"}}
+        self.min_tx_volume = 0  # In secondary coin
 
     def __str__(self):
         return "%s: %s" % (self.name,

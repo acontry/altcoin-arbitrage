@@ -18,6 +18,7 @@ class PrivateBter(Market):
         super().__init__()
         self.key = config.bter_key
         self.secret = config.bter_secret
+        self.min_tx_volume = 0.001
         try:
             self.get_balances()
         except Exception:
@@ -66,5 +67,6 @@ class PrivateBter(Market):
             res = self.query("getfunds", {})
             self.p_coin_balance = float(res["available_funds"][self.p_coin])
             self.s_coin_balance = float(res["available_funds"][self.s_coin])
+            self.sell
         except Exception:
             raise Exception("Error getting balance")
