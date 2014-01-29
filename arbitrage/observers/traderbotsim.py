@@ -1,8 +1,6 @@
 import logging
 import config
 from .observer import Observer
-from private_markets import mtgox
-from private_markets import bitcoincentral
 from .traderbot import TraderBot
 import json
 
