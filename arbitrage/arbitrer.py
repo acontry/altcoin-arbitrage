@@ -14,23 +14,25 @@ class Arbitrer(object):
         self.markets = []
         self.observers = []
         self.depths = {}
-        self.observer_names = config.observers
-        self.markets_names = config.markets
-        self.init_markets()
-        self.init_observers()
+        self.market_names = []
+        self.observer_names = []
+        self.init_markets(config.markets)
+        self.init_observers(config.observers)
         self.threadpool = ThreadPoolExecutor(max_workers=10)
 
-    def init_markets(self):
+    def init_markets(self, markets):
         """Initialize markets by importing public market classes."""
-        for market_name in config.markets:
+        self.market_names = markets
+        for market_name in markets:
             exec('import public_markets.' + market_name.lower())
             market = eval('public_markets.' + market_name.lower() + '.' +
                           market_name + '()')
             self.markets.append(market)
 
-    def init_observers(self):
+    def init_observers(self, _observers):
         """Initialize observers by importing observer classes."""
-        for observer_name in self.observer_names:
+        self.observer_names = _observers
+        for observer_name in _observers:
             exec('import observers.' + observer_name.lower())
             observer = eval('observers.' + observer_name.lower() + '.' +
                             observer_name + '()')
