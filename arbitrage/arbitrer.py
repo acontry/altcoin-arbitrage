@@ -49,10 +49,12 @@ class Arbitrer(object):
         ask_vol = self.depths[kask]["asks"][0]["amount"]
         bid_vol = self.depths[kbid]["bids"][0]["amount"]
 
-        trade_vol = min(ask_vol, bid_vol, config.max_tx_volume)
-        profit = (sell_price - buy_price) * trade_vol
+        trade_vol = min(ask_vol, bid_vol)
 
-        #buy_fee = self.markets
+        buy_fee = self.markets[kask].fees["buy"]["fee"]
+        sell_fee = self.markets[kbid].fees["sell"]["fee"]
+        # Profit is after fees
+        profit = trade_vol * ((1 - sell_fee)*sell_price - (1 + buy_fee)*buy_price)
 
         # Set weighted prices to the same as prices
         return profit, trade_vol, buy_price, sell_price, buy_price, sell_price
@@ -68,16 +70,15 @@ class Arbitrer(object):
         bid  -- highest bid (in dict form along with amount)
 
         """
-        perc = (bid["price"] - ask["price"]) / bid["price"] * 100
         profit, volume, buyprice, sellprice, weighted_buyprice, \
         weighted_sellprice = self.check_opportunity(kask, kbid)
         if volume == 0 or buyprice == 0:
             return
-        perc2 = (1 - (volume - (profit / buyprice)) / volume) * 100
+        perc = profit / (volume * buyprice) * 100
         for observer in self.observers:
             observer.opportunity(
                 profit, volume, buyprice, kask, sellprice, kbid,
-                perc2, weighted_buyprice, weighted_sellprice)
+                perc, weighted_buyprice, weighted_sellprice)
 
     def __get_market_depth(self, market, depths):
         depths[market.name] = market.get_depth()
