@@ -56,7 +56,7 @@ class PrivateBter(Market):
     def _sell(self, amount, price):
         """Create a sell limit order"""
         currency_pair = self.p_coin.lower() + "_" + self.s_coin.lower()
-        req = {"pair": currency_pair, "type": "BUY", "rate": price, "amount": amount}
+        req = {"pair": currency_pair, "type": "SELL", "rate": price, "amount": amount}
         response = self.query("placeorder", req)
         if response["result"] != True:
             raise TradeException(response["msg"])
