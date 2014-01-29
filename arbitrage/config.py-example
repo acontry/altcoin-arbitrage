@@ -35,22 +35,12 @@ vircurex_user = "USER"
 coinse_key = "KEY"
 coinse_secret = "SECRET"
 
-mtgox_key = "FIXME"
-mtgox_secret = "FIXME"
-
-bitcoincentral_username = "FIXME"
-bitcoincentral_password = "FIXME"
-bitcoincentral_address = "FIXME"  # to deposit btc from markets / wallets
-
-bitstamp_username = "FIXME"
-bitstamp_password = "FIXME"
-
 # SafeGuards
 max_tx_volume = 10000  # in primary coin
 min_tx_volume = 100  # in primary coin
 balance_margin = 0.005  # Always leave this fraction of coins in an account when trading
 profit_thresh = 0  # in secondary coin?
-perc_thresh = 1  # in % - don't set lower than buy/sell fee %
+perc_thresh = 1  # in % - after fees, so any number greater than 0 means profit
 
 #### Emailer Observer Config
 smtp_host = 'FIXME'
