@@ -7,6 +7,7 @@ from .emailer import send_email
 from private_markets import cryptsy
 from private_markets import vircurex
 from private_markets import bter
+from private_markets import coinse
 import concurrent.futures
 
 class TraderBot(Observer):
@@ -14,7 +15,8 @@ class TraderBot(Observer):
         self.clients = {
             "Cryptsy": cryptsy.PrivateCryptsy(),
             "Vircurex": vircurex.PrivateVircurex(),
-            "Bter": bter.PrivateBter()
+            "Bter": bter.PrivateBter(),
+            "CoinsE": coinse.PrivateCoinsE()
         }
         self.trade_wait = 120  # in seconds
         self.last_trade = 0
