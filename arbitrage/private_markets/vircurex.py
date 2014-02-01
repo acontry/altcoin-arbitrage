@@ -72,4 +72,4 @@ class PrivateVircurex(Market):
             self.s_coin_balance = float(res["balances"][self.s_coin]["availablebalance"])
 
         except Exception:
-            raise Exception("Error getting balance: Vircurex error #%d" % res['status'])
+            raise Exception("Error getting balance: Vircurex error %d" % res['status'])
