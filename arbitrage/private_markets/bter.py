@@ -65,7 +65,13 @@ class PrivateBter(Market):
         """Get balance of primary coin and secondary coin"""
         try:
             res = self.query("getfunds", {})
-            self.p_coin_balance = float(res["available_funds"][self.p_coin])
-            self.s_coin_balance = float(res["available_funds"][self.s_coin])
+            if self.p_coin in res["available_funds"]:
+                self.p_coin_balance = float(res["available_funds"][self.p_coin])
+            else:
+                self.p_coin_balance = 0
+            if self.s_coin in res["available_funds"]:
+                self.s_coin_balance = float(res["available_funds"][self.s_coin])
+            else:
+                self.s_coin_balance = 0
         except Exception:
             raise Exception("Error getting balance")
