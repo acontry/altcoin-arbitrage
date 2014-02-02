@@ -35,7 +35,7 @@ class TraderBot(Observer):
         # Sort trades by profit, most profitable first
         self.potential_trades.sort(key=lambda x: x[0], reverse=True)
         # Execute only the best (more profitable)
-        self.execute_trade(*self.potential_trades[0][1:])
+        self.execute_trade(*self.potential_trades[0][:])
 
     def max_tradable_volume(self, buy_price, kask, kbid):
         # We're buying primary coins from the market with kask at buy_price
@@ -90,11 +90,11 @@ class TraderBot(Observer):
     def watch_balances(self):
         pass
 
-    def execute_trade(self, volume, kask, kbid, weighted_buyprice,
+    def execute_trade(self, profit, volume, kask, kbid, weighted_buyprice,
                       weighted_sellprice, buyprice, sellprice):
         self.last_trade = time.time()
         logging.info(" [TraderBot] Buy @%s %f %s and sell @%s for %f %s profit",
-                     kask, volume, config.p_coin, kbid, (sellprice-buyprice)*volume, config.s_coin)
+                     kask, volume, config.p_coin, kbid, profit, config.s_coin)
 
         # Put in buy and sell orders at least profitable prices possible so that they have the best
         # chance of executing

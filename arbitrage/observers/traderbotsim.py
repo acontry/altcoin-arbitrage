@@ -78,12 +78,12 @@ class TraderBotSim(TraderBot):
             price) for i in set(self.clients.values())]
         return sum(market_balances)
 
-    def execute_trade(self, volume, kask, kbid, 
+    def execute_trade(self, profit, volume, kask, kbid,
                       weighted_buyprice, weighted_sellprice,
                       buyprice, sellprice):
         self.clients[kask].buy(volume, buyprice)
         self.clients[kbid].sell(volume, sellprice)
-        logging.info("[TraderBotSim] Profit: %f %s", (sellprice-buyprice)*volume, config.s_coin)
+        logging.info("[TraderBotSim] Profit: %f %s", profit, config.s_coin)
 
 if __name__ == "__main__":
     t = TraderBotSim()
