@@ -10,7 +10,7 @@ import config
 
 
 class PrivateCryptsy(Market):
-    url = "https://www.cryptsy.com/api"
+    url = "https://api.cryptsy.com/api"
 
     def __init__(self):
         super().__init__()
