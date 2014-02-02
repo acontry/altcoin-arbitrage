@@ -9,7 +9,7 @@ class Vircurex(Market):
         self.update_rate = 60
 
     def update_depth(self):
-        url = 'https://vircurex.com/api/orderbook.json'
+        url = 'https://api.vircurex.com/api/orderbook.json'
         price_query = {'base': 'DOGE', 'alt': 'BTC'}
         res = requests.get(url, data=price_query)
         depth = res.json()

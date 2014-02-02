@@ -24,6 +24,7 @@ bter_key = "KEY"
 bter_secret = "SECRET"
 
 vircurex_secrets = {"get_balance": "SECRET",
+                    "get_balances": "SECRET",
                     "create_order": "SECRET",
                     "release_order": "SECRET",
                     "delete_order": "SECRET",
