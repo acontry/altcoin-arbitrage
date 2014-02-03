@@ -11,6 +11,7 @@ class MockMarket(object):
         self.filename = "traderbot-sim-" + name + ".json"
         self.s_coin_balance = s_coin_balance
         self.p_coin_balance = p_coin_balance
+        self.fees = {"buy": {"fee": 0.002, "coin": "p_coin"}, "sell": {"fee": 0.002, "coin": "s_coin"}}
         self.fee = fee
         self.persistent = persistent
         if self.persistent:

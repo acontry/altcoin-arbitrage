@@ -52,7 +52,7 @@ class TraderBot(Observer):
                 self.clients[client].p_coin_balance = 0
                 self.clients[client].s_coin_balance = 0
 
-    def opportunity(self, profit, market_volume, buyprice, kask, sellprice, kbid, perc,
+    def opportunity(self, profit, market_volume, buy_price, kask, sell_price, kbid, perc,
                     weighted_buyprice, weighted_sellprice):
         if profit < config.profit_thresh or perc < config.perc_thresh:
             logging.verbose("[TraderBot] Profit or profit percentage lower than"
@@ -67,10 +67,15 @@ class TraderBot(Observer):
                             " available: %s", kbid)
             return
 
-        # Used to update client balance here, now do it in begin_opportunity_finder()
-
-        max_volume_from_balances = self.max_tradable_volume(buyprice, kask, kbid)
+        # Calculate trade volume
+        max_volume_from_balances = self.max_tradable_volume(buy_price, kask, kbid)
         trade_volume = min(market_volume, max_volume_from_balances, config.max_tx_volume)
+
+        # Calculate new profit based on trade_volume
+        buy_fee = self.clients[kask].fees["buy"]["fee"]
+        sell_fee = self.clients[kbid].fees["sell"]["fee"]
+        profit = trade_volume * ((1 - sell_fee)*sell_price - (1 + buy_fee)*buy_price)
+
         if trade_volume < config.min_tx_volume:
             logging.verbose("[TraderBot] Can't automate this trade, minimum volume "
                             "transaction not reached %f/%f" % (trade_volume, config.min_tx_volume))
@@ -85,7 +90,7 @@ class TraderBot(Observer):
             return
         self.potential_trades.append([profit, trade_volume, kask, kbid,
                                       weighted_buyprice, weighted_sellprice,
-                                      buyprice, sellprice])
+                                      buy_price, sell_price])
 
     def watch_balances(self):
         pass
