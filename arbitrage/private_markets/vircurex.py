@@ -48,6 +48,7 @@ class PrivateVircurex(Market):
         response = self.secure_request("release_order", params)
         if response["status"] != 0:
             raise TradeException(response["status"])
+        return response["orderid"]
 
     #TODO
     def _sell(self, amount, price):
@@ -62,6 +63,7 @@ class PrivateVircurex(Market):
         response = self.secure_request("release_order", params)
         if response["status"] != 0:
             raise TradeException(response["status"])
+        return response["orderid"]
 
     #TODO
     def get_balances(self):

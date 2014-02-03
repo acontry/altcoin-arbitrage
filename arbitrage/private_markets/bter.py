@@ -52,6 +52,7 @@ class PrivateBter(Market):
         response = self.query("placeorder", req)
         if response["result"] != True:
             raise TradeException(response["msg"])
+        return response["order_id"]
 
     def _sell(self, amount, price):
         """Create a sell limit order"""
@@ -60,6 +61,7 @@ class PrivateBter(Market):
         response = self.query("placeorder", req)
         if response["result"] != True:
             raise TradeException(response["msg"])
+        return response["order_id"]
 
     def get_balances(self):
         """Get balance of primary coin and secondary coin"""

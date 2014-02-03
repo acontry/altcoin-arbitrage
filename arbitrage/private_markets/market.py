@@ -13,6 +13,7 @@ class Market:
         self.s_coin = config.s_coin
         self.p_coin_balance = 0.0
         self.s_coin_balance = 0.0
+        self.open_orders = []
         self.fees = {"buy": {"fee": 0.002, "coin": "p_coin"}, "sell": {"fee": 0.002, "coin": "s_coin"}}
         self.min_tx_volume = 0  # In secondary coin
 
@@ -25,14 +26,16 @@ class Market:
         """Orders are always priced in secondary coin"""
         logging.info("Buy %.8f %s at %.8f %s @%s" % (amount, self.p_coin, price,
                                                      self.s_coin, self.name))
-        self._buy(amount, price)
+        order_id = self._buy(amount, price)
+        self.open_orders.append(order_id)
 
 
     def sell(self, amount, price):
         """Orders are always priced in secondary coin"""
         logging.info("Sell %.8f %s at %.8f %s @%s" % (amount, self.p_coin, price,
                                                   self.s_coin, self.name))
-        self._sell(amount, price)
+        order_id = self._sell(amount, price)
+        self.open_orders.append(order_id)
 
     def _buy(self, amount, price):
         raise NotImplementedError("%s.sell(self, amount, price)" % self.name)
