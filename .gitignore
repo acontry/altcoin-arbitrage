@@ -1,1 +1,3 @@
+*.pyc
+arbitrage/.idea
 arbitrage/config.py
