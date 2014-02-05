@@ -1,3 +1,4 @@
 *.pyc
 arbitrage/.idea
 arbitrage/config.py
+arbitrage/history
