@@ -21,7 +21,7 @@ class BaseModel(peewee.Model):
 
 
 class Order(BaseModel):
-    order_id = peewee.IntegerField()
+    order_id = peewee.CharField(max_length=64)
     market = peewee.CharField(max_length=32)
     time_placed = peewee.DateTimeField()
     order_type = peewee.CharField(max_length=4)
