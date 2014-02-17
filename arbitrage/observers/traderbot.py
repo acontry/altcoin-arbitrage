@@ -2,13 +2,14 @@ import decimal
 import logging
 import config
 import time
+import concurrent.futures
 from .observer import Observer
 from .emailer import send_email
 from private_markets import cryptsy
 from private_markets import vircurex
 from private_markets import bter
 from private_markets import coinse
-import concurrent.futures
+
 
 class TraderBot(Observer):
     def __init__(self):

@@ -43,6 +43,12 @@ balance_margin = 0.005  # Always leave this fraction of coins in an account when
 profit_thresh = 0  # in secondary coin?
 perc_thresh = 1  # in % - after fees, so any number greater than 0 means profit
 
+# Database setup
+use_db = True
+db_type = "sqlite"  # Can be sqlite or mysql. If sqlite, username and pass not used
+db_username = ""
+db_password = ""
+
 #### Emailer Observer Config
 smtp_host = 'FIXME'
 smtp_login = 'FIXME'

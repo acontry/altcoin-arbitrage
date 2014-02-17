@@ -2,6 +2,8 @@
 
 import logging
 import config
+import datetime
+import database
 
 class TradeException(Exception):
     pass
@@ -28,7 +30,8 @@ class Market:
                                                      self.s_coin, self.name))
         order_id = self._buy(amount, price)
         self.open_orders.append(order_id)
-
+        # Record to database
+        database.place_order(order_id, self.name, datetime.datetime.now(), "buy", price, amount)
 
     def sell(self, amount, price):
         """Orders are always priced in secondary coin"""
@@ -36,6 +39,8 @@ class Market:
                                                   self.s_coin, self.name))
         order_id = self._sell(amount, price)
         self.open_orders.append(order_id)
+        # Record to database
+        database.place_order(order_id, self.name, datetime.datetime.now(), "sell", price, amount)
 
     def _buy(self, amount, price):
         raise NotImplementedError("%s.sell(self, amount, price)" % self.name)
