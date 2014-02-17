@@ -46,6 +46,8 @@ perc_thresh = 1  # in % - after fees, so any number greater than 0 means profit
 # Database setup
 use_db = True
 db_type = "sqlite"  # Can be sqlite or mysql. If sqlite, username and pass not used
+# For MySQL
+db_name = ""
 db_username = ""
 db_password = ""
 
