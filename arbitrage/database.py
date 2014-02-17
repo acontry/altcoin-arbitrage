@@ -25,8 +25,8 @@ class Order(BaseModel):
     market = peewee.CharField(max_length=32)
     time_placed = peewee.DateTimeField()
     order_type = peewee.CharField(max_length=4)
-    price = peewee.DecimalField(decimal_places=8)
-    amount = peewee.DecimalField(decimal_places=8)
+    price = peewee.DecimalField(max_digits=12, decimal_places=8)
+    amount = peewee.DecimalField(max_digits=18, decimal_places=8)
     has_executed = peewee.BooleanField(default=False)
 
     class Meta:
