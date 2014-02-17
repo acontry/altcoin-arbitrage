@@ -8,7 +8,7 @@ import config
 if config.db_type == "sqlite":
     database = peewee.SqliteDatabase("trader_db.db", threadlocals=True)
 elif config.db_type == "mysql":
-    database = peewee.MySQLDatabase(config.db_name, host="localhost", user=config.db_username,
+    database = peewee.MySQLDatabase(config.db_name, unix_socket=config.db_unix_socket, user=config.db_username,
                                     passwd=config.db_password)
 else:
     raise Exception("db_type must be sqlite or mysql")
