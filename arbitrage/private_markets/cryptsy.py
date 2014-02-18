@@ -23,7 +23,7 @@ class PrivateCryptsy(Market):
     def query(self, method, req):
         # generate POST data string
         req["method"] = method
-        req["nonce"] = int(1000 * time.time())
+        req["nonce"] = int(time.time())
         post_data = urllib.parse.urlencode(req)
         # sign it
         sign = hmac.new(self.secret.encode("ascii"), post_data.encode("ascii"), hashlib.sha512).hexdigest()
