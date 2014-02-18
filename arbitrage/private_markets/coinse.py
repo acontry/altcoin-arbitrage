@@ -50,14 +50,14 @@ class PrivateCoinsE(Market):
     def _buy(self, amount, price):
         """Create a buy limit order"""
         response = self._place_order(amount, price, "buy")
-        if response["status"] != "true":
+        if response["status"] != True:
             raise TradeException(response["error"])
         return response["order"]["id"]
 
     def _sell(self, amount, price):
         """Create a sell limit order"""
         response = self._place_order(amount, price, "sell")
-        if response["status"] != "true":
+        if response["status"] != True:
             raise TradeException(response["error"])
         return response["order"]["id"]
 

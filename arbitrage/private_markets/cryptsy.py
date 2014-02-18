@@ -60,7 +60,7 @@ class PrivateCryptsy(Market):
         response = self.query("createorder", params)
         if response["success"] == 0:
             raise TradeException(response["error"])
-        return response["return"]["orderid"]
+        return response["orderid"]
 
     def _sell(self, amount, price):
         """Create a sell limit order"""
@@ -68,7 +68,7 @@ class PrivateCryptsy(Market):
         response = self.query("createorder", params)
         if response["success"] == 0:
             raise TradeException(response["error"])
-        return response["return"]["orderid"]
+        return response["orderid"]
 
     def get_balances(self):
         """Get balance of primary coin and secondary coin"""
