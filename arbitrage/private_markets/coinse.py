@@ -22,7 +22,7 @@ class PrivateCoinsE(Market):
     def query(self, method_url, req):
         url = self.api_url + method_url
         # generate POST data string
-        req["nonce"] = int(time.time())
+        req["nonce"] = int(1000 * time.time())
         post_data = urllib.parse.urlencode(req)
         # sign it
         sign = hmac.new(self.secret.encode("ascii"), post_data.encode("ascii"), hashlib.sha512).hexdigest()

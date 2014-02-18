@@ -28,14 +28,13 @@ class PrivateVircurex(Market):
         vp = [command] + list(params.values())
         token_input = "%s;%s;%s;%s;%s" % (secret, self.user, t, txid, ';'.join(map(str, vp)))
         token = hashlib.sha256(token_input.encode("ascii")).hexdigest()
-        # cbuilding request
+        # Building request
         reqp = {"account": self.user, "id": txid, "token": token, "timestamp": t}
         reqp.update(params)
         url = "%s/api/%s.json" % (self.domain, command)
         data = requests.get(url, params=reqp)
         return data.json()
 
-    #TODO
     def _buy(self, amount, price):
         """Create a buy limit order"""
         params = OrderedDict((("ordertype", "BUY"), ("amount", "{:.8f}".format(amount)),
@@ -50,7 +49,6 @@ class PrivateVircurex(Market):
             raise TradeException(response["status"])
         return response["orderid"]
 
-    #TODO
     def _sell(self, amount, price):
         """Create a sell limit order"""
         params = OrderedDict((("ordertype", "SELL"), ("amount", "{:.8f}".format(amount)),
@@ -65,7 +63,6 @@ class PrivateVircurex(Market):
             raise TradeException(response["status"])
         return response["orderid"]
 
-    #TODO
     def get_balances(self):
         """Get balance"""
         try:
