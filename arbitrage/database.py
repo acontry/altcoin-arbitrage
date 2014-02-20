@@ -32,6 +32,7 @@ class MarketOrder(BaseModel):
     class Meta:
         order_by = ('-time_placed',)
 
+# Test connection and create tables
 if config.use_db is True:
     database.connect()
     database.close()
