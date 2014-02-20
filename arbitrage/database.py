@@ -20,7 +20,7 @@ class BaseModel(peewee.Model):
         database = database
 
 
-class Order(BaseModel):
+class MarketOrder(BaseModel):
     order_id = peewee.CharField(max_length=64)
     market = peewee.CharField(max_length=32)
     time_placed = peewee.DateTimeField()
@@ -37,14 +37,14 @@ if config.use_db is True:
     database.close()
     logging.info("Logging to %s database", config.db_type)
     # Create table if it doesn't exist
-    Order.create_table(fail_silently=True)
+    MarketOrder.create_table(fail_silently=True)
 
 
 def place_order(order_id, market, time_placed, order_type, order_price, order_amount):
     if config.use_db is False:
         pass
     database.connect()
-    Order.create(order_id=order_id, market=market, time_placed=time_placed, order_type=order_type,
+    MarketOrder.create(order_id=order_id, market=market, time_placed=time_placed, order_type=order_type,
                  price=order_price, amount=order_amount)
     database.close()
 
