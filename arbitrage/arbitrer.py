@@ -90,7 +90,7 @@ class Arbitrer(object):
             futures.append(self.threadpool.submit(self.__get_market_depth,
                                                   market, depths))
         wait(futures, timeout=20)
-        return depths
+        self.depths = depths
 
     def tickers(self):
         """Update markets and print tickers to verbose log."""
@@ -101,7 +101,6 @@ class Arbitrer(object):
     def replay_history(self, directory):
         import os
         import json
-        import pprint
 
         files = os.listdir(directory)
         files.sort()
@@ -141,7 +140,7 @@ class Arbitrer(object):
     def loop(self):
         """Main loop."""
         while True:
-            self.depths = self.update_depths()
+            self.update_depths()
             self.tickers()
             self.tick()
             time.sleep(config.refresh_rate)

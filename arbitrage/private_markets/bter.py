@@ -45,6 +45,12 @@ class PrivateBter(Market):
                             (self.name, e))
         return value
 
+    def get_open_orders(self):
+        response = self.query('orderlist',{})
+        if response["result"] != True:
+            raise TradeException(response["msg"])
+        return response
+
     def _buy(self, amount, price):
         """Create a buy limit order"""
         currency_pair = self.p_coin.lower() + "_" + self.s_coin.lower()
