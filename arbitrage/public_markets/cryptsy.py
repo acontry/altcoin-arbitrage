@@ -14,7 +14,6 @@ class Cryptsy(Market):
         self.a = cryptsy.PrivateCryptsy()
 
     def update_depth(self):
-        #Dogecoin/BTC exchange URL
         #url = 'http://pubapi.cryptsy.com/api.php?method=singleorderdata&marketid=132'
         #res = requests.get(url)
         #depth = res.json()
