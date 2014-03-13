@@ -3,6 +3,7 @@ __author__ = 'alex'
 import requests
 from .market import Market
 
+
 class Vircurex(Market):
     def __init__(self):
         super(Vircurex, self).__init__()

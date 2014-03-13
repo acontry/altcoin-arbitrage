@@ -9,7 +9,7 @@ class Market(object):
         self.name = self.__class__.__name__
         self.p_coin = config.p_coin
         self.s_coin = config.s_coin
-        self.depth = {}
+        self.depth = {'asks': [], 'bids': []}
         self.depth_updated = 0
         # Configurable parameters
         self.update_rate = 60
@@ -19,7 +19,13 @@ class Market(object):
         # If the update rate dictates that it is time to update the market, do it
         timediff = time.time() - self.depth_updated
         if timediff > self.update_rate:
-            self.ask_update_depth()
+            try:
+                self.update_depth()
+                self.depth_updated = time.time()
+            except requests.HTTPError:
+                logging.error("HTTPError, can't update market: %s" % self.name)
+            except Exception as e:
+                logging.error("Can't update market: %s - %s" % (self.name, str(e)))
         # If the last updated time indicates that the market is expired, set the bids/asks to 0
         timediff = time.time() - self.depth_updated
         if timediff > config.market_expiration_time:
@@ -27,15 +33,6 @@ class Market(object):
             self.depth = {'asks': [{'price': 0, 'amount': 0}], 'bids': [
                 {'price': 0, 'amount': 0}]}
         return self.depth
-
-    def ask_update_depth(self):
-        try:
-            self.update_depth()
-            self.depth_updated = time.time()
-        except requests.HTTPError:
-            logging.error("HTTPError, can't update market: %s" % self.name)
-        except Exception as e:
-            logging.error("Can't update market: %s - %s" % (self.name, str(e)))
 
     def get_ticker(self):
         """Returns bid/ask prices from depth"""
