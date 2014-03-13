@@ -121,6 +121,8 @@ class Arbitrer(object):
             for kmarket2 in self.depths:
                 if kmarket1 == kmarket2:  # same market
                     continue
+                if self.depths[kmarket1]['current'] is False or self.depths[kmarket1]['current'] is False:
+                    continue
                 # Check that respective markets contain bids and asks.
                 market1 = self.depths[kmarket1]
                 market2 = self.depths[kmarket2]

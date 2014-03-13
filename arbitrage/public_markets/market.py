@@ -9,30 +9,49 @@ class Market(object):
         self.name = self.__class__.__name__
         self.p_coin = config.p_coin
         self.s_coin = config.s_coin
-        self.depth = {'asks': [], 'bids': []}
-        self.depth_updated = 0
+        self.depth = {'asks': [], 'bids': [], 'last_updated': 0}
+        self.prices = self.get_all_prices()
         # Configurable parameters
         self.update_rate = 60
         self.fees = {"buy": {"fee": 0.002, "coin": "p_coin"}, "sell": {"fee": 0.002, "coin": "s_coin"}}
 
     def get_depth(self):
         # If the update rate dictates that it is time to update the market, do it
-        timediff = time.time() - self.depth_updated
+        timediff = time.time() - self.depth['last_updated']
         if timediff > self.update_rate:
             try:
                 self.update_depth()
-                self.depth_updated = time.time()
+                self.depth['last_updated'] = time.time()
+                self.depth['current'] = True
             except requests.HTTPError:
                 logging.error("HTTPError, can't update market: %s" % self.name)
             except Exception as e:
                 logging.error("Can't update market: %s - %s" % (self.name, str(e)))
-        # If the last updated time indicates that the market is expired, set the bids/asks to 0
-        timediff = time.time() - self.depth_updated
+        # If the market is expired, mark it as such
+        timediff = time.time() - self.depth['last_updated']
         if timediff > config.market_expiration_time:
             logging.warning('Market: %s order book is expired', self.name)
-            self.depth = {'asks': [{'price': 0, 'amount': 0}], 'bids': [
-                {'price': 0, 'amount': 0}]}
+            self.depth['current'] = False
         return self.depth
+
+    def get_all_prices(self):
+        """Get bid/ask prices for all currencies from market"""
+        timediff = time.time() - self.prices['last_updated']
+        if timediff > self.update_rate:
+            try:
+                self.update_prices()
+                self.prices['last_updated'] = time.time()
+                self.prices['current'] = True
+            except requests.HTTPError:
+                logging.error("HTTPError, can't update market: %s" % self.name)
+            except Exception as e:
+                logging.error("Can't update market: %s - %s" % (self.name, str(e)))
+        # If market is expired, mark it as such
+        timediff = time.time() - self.prices['last_updated']
+        if timediff > config.market_expiration_time:
+            logging.warning('Market: %s order book is expired', self.name)
+            self.prices['current'] = False
+        return self.prices
 
     def get_ticker(self):
         """Returns bid/ask prices from depth"""
@@ -74,6 +93,9 @@ class Market(object):
 
     ## Abstract methods
     def update_depth(self):
+        pass
+
+    def update_prices(self):
         pass
 
     def buy(self, price, amount):
