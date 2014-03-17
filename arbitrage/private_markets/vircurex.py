@@ -1,4 +1,3 @@
-# Copyright (C) 2013, Maxime Biais <maxime@biais.org>
 
 from .market import Market, TradeException
 import time
@@ -18,8 +17,16 @@ class PrivateVircurex(Market):
         self.user = config.vircurex_user
         self.get_balances()
 
-    def secure_request(self, command, params):
-        """params is an ordered dictionary of parameters to pass."""
+    def secure_request(self, command, *args):
+        """params is an ordered dictionary of parameters to pass. params_nohash is a dictionary of
+        parameters that aren't part of the encoded request."""
+        params = {}
+        params_nohash = {}
+        if len(args) > 0:
+            params = args[0]
+            if len(args) > 1:
+                params_nohash = args[1]
+
         secret = self.secrets[command]
         t = time.strftime("%Y-%m-%dT%H:%M:%S", time.gmtime())  # UTC time
         txid = "%s-%f" % (t, random.randint(0, 1 << 31))
@@ -31,6 +38,7 @@ class PrivateVircurex(Market):
         # Building request
         reqp = {"account": self.user, "id": txid, "token": token, "timestamp": t}
         reqp.update(params)
+        reqp.update(params_nohash)
         url = "%s/api/%s.json" % (self.domain, command)
         data = requests.get(url, params=reqp)
         return data.json()
@@ -66,7 +74,7 @@ class PrivateVircurex(Market):
     def get_balances(self):
         """Get balance"""
         try:
-            res = self.secure_request("get_balances", {})
+            res = self.secure_request("get_balances")
             self.p_coin_balance = float(res["balances"][self.p_coin]["availablebalance"])
             self.s_coin_balance = float(res["balances"][self.s_coin]["availablebalance"])
 
