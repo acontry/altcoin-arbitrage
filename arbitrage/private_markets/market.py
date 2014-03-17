@@ -2,11 +2,14 @@
 
 import logging
 import config
+import time
 import datetime
 import database
 
+
 class TradeException(Exception):
     pass
+
 
 class Market:
     def __init__(self):
@@ -29,16 +32,16 @@ class Market:
         logging.info("Buy %.8f %s at %.8f %s @%s" % (amount, self.p_coin, price,
                                                      self.s_coin, self.name))
         order_id = self._buy(amount, price)
-        self.open_orders.append(order_id)
+        self.open_orders.append({'time_placed': time.time(), 'order_id': order_id})
         # Record to database
         database.place_order(order_id, self.name, datetime.datetime.now(), "buy", price, amount)
 
     def sell(self, amount, price):
         """Orders are always priced in secondary coin"""
         logging.info("Sell %.8f %s at %.8f %s @%s" % (amount, self.p_coin, price,
-                                                  self.s_coin, self.name))
+                                                      self.s_coin, self.name))
         order_id = self._sell(amount, price)
-        self.open_orders.append(order_id)
+        self.open_orders.append({'time_placed': time.time(), 'order_id': order_id})
         # Record to database
         database.place_order(order_id, self.name, datetime.datetime.now(), "sell", price, amount)
 

@@ -31,13 +31,14 @@ class Cryptsy(Market):
     def format_prices(self, prices):
         for pair in prices['return']:
             pair_depth = prices['return'][pair]
-            pair_name = pair_depth['primarycode'] + ',' + pair_depth['secondarycode']
+            pair_name = (pair_depth['primarycode'], pair_depth['secondarycode'])
             pair_depth = self.format_depth(pair_depth['buyorders'],
                                            pair_depth['sellorders'], 'price', 'quantity')
             self.prices[pair_name] = {'bid': pair_depth['bids'][0]['price'],
                                       'ask': pair_depth['asks'][0]['price']}
         return self.prices
 
-if __name__ == "__main__":
-    market = Cryptsy()
-    print(market.get_ticker())
+
+    if __name__ == "__main__":
+        market = Cryptsy()
+        print(market.get_ticker())
