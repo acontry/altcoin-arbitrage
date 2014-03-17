@@ -45,6 +45,9 @@ class Market:
         # Record to database
         database.place_order(order_id, self.name, datetime.datetime.now(), "sell", price, amount)
 
+    def update_order_status(self):
+        pass
+
     def _buy(self, amount, price):
         raise NotImplementedError("%s.sell(self, amount, price)" % self.name)
 

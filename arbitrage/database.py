@@ -46,6 +46,16 @@ def place_order(order_id, market, time_placed, order_type, order_price, order_am
         pass
     database.connect()
     MarketOrder.create(order_id=order_id, market=market, time_placed=time_placed, order_type=order_type,
-                 price=order_price, amount=order_amount)
+                       price=order_price, amount=order_amount)
     database.close()
+
+
+def order_completed(market, order_ids):
+    if config.use_db is False:
+        pass
+    database.connect()
+    update_orders = MarketOrder.update(has_executed=True).\
+        where((MarketOrder.market == market) & (MarketOrder.order_id << order_ids))
+    update_orders.execute()
+
 

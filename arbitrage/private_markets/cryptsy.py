@@ -7,6 +7,7 @@ import urllib.parse
 import requests
 import hashlib
 import config
+import database
 
 
 class PrivateCryptsy(Market):
@@ -69,6 +70,28 @@ class PrivateCryptsy(Market):
         if response["success"] == 0:
             raise TradeException(response["error"])
         return response["orderid"]
+
+    def update_order_status(self):
+        """Updates the status of open orders. First queries for list of open orders. If orders aren't
+        found there, query the list of recent trades to match to the order to confirm that it is
+        completed."""
+        if not self.open_orders:
+            pass
+        params = {'marketid': self.mkt_id}
+        response = self.query('myorders', params)
+
+        remaining_open_orders = []
+        completed_order_ids = []
+        for open_order in self.open_orders:
+            found_order = [found_order for found_order in response if
+                           found_order['orderid'] == open_order['order_id']]
+            if not found_order:
+                completed_order_ids.append(open_order['order_id'])
+            else:
+                remaining_open_orders.append(open_order)
+
+        self.open_orders = remaining_open_orders
+        database.order_completed(self.name, completed_order_ids)
 
     def get_balances(self):
         """Get balance of primary coin and secondary coin"""

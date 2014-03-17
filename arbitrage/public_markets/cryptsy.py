@@ -38,7 +38,6 @@ class Cryptsy(Market):
                                       'ask': pair_depth['asks'][0]['price']}
         return self.prices
 
-
     if __name__ == "__main__":
         market = Cryptsy()
         print(market.get_ticker())
