@@ -16,9 +16,9 @@ class TraderBot(Observer):
         self.clients = {
             "Cryptsy": cryptsy.PrivateCryptsy(),
             "Vircurex": vircurex.PrivateVircurex(),
-            "Bter": bter.PrivateBter()}
-           # "CoinsE": coinse.PrivateCoinsE()
-       # }
+            "Bter": bter.PrivateBter(),
+            "CoinsE": coinse.PrivateCoinsE()
+        }
         self.trade_wait = 120  # in seconds
         self.last_trade = 0
         self.potential_trades = []
