@@ -57,5 +57,6 @@ def order_completed(market, order_ids):
     update_orders = MarketOrder.update(has_executed=True).\
         where((MarketOrder.market == market) & (MarketOrder.order_id << order_ids))
     update_orders.execute()
+    database.close()
 
 
