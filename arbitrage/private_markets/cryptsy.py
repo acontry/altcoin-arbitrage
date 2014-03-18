@@ -49,7 +49,7 @@ class PrivateCryptsy(Market):
             res = self.query("getmarkets", {})
             for i, market in enumerate(res["return"]):
                 if (market["primary_currency_code"].upper() == p_coin.upper() and
-                            market["secondary_currency_code"].upper() == s_coin.upper()):
+                           market["secondary_currency_code"].upper() == s_coin.upper()):
                     mkt_id = market["marketid"]
             return mkt_id
         except Exception:
@@ -83,7 +83,7 @@ class PrivateCryptsy(Market):
         remaining_open_orders = []
         completed_order_ids = []
         for open_order in self.open_orders:
-            found_order = [found_order for found_order in response if
+            found_order = [found_order for found_order in response['return'] if
                            found_order['orderid'] == open_order['order_id']]
             if not found_order:
                 completed_order_ids.append(open_order['order_id'])

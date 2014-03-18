@@ -11,7 +11,6 @@ class Market(object):
         self.s_coin = config.s_coin
         self.depth = {'asks': [], 'bids': [], 'last_updated': 0}
         self.prices = {'last_updated': 0}
-        self.prices = self.get_all_prices()
         # Configurable parameters
         self.update_rate = 60
         self.fees = {"buy": {"fee": 0.002, "coin": "p_coin"}, "sell": {"fee": 0.002, "coin": "s_coin"}}
