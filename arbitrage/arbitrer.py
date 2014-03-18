@@ -5,7 +5,6 @@ import observers
 import config
 import time
 import logging
-import json
 from concurrent.futures import ThreadPoolExecutor, wait
 
 

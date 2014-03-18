@@ -68,7 +68,7 @@ class PrivateVircurex(Market):
 
     def update_order_status(self):
         if not self.open_orders:
-            pass
+            return
         response = self.secure_request('read_orders', params_nohash={'otype': 1})
         received_open_orders = []
         for i in range(1, response['numberorders'] + 1):

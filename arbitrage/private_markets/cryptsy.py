@@ -76,7 +76,7 @@ class PrivateCryptsy(Market):
         found there, query the list of recent trades to match to the order to confirm that it is
         completed."""
         if not self.open_orders:
-            pass
+            return
         params = {'marketid': self.mkt_id}
         response = self.query('myorders', params)
 

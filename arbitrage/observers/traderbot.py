@@ -16,9 +16,9 @@ class TraderBot(Observer):
         self.clients = {
             "Cryptsy": cryptsy.PrivateCryptsy(),
             "Vircurex": vircurex.PrivateVircurex(),
-            "Bter": bter.PrivateBter(),
-            "CoinsE": coinse.PrivateCoinsE()
-        }
+            "Bter": bter.PrivateBter()}
+           # "CoinsE": coinse.PrivateCoinsE()
+       # }
         self.trade_wait = 120  # in seconds
         self.last_trade = 0
         self.potential_trades = []
@@ -31,12 +31,16 @@ class TraderBot(Observer):
     def end_opportunity_finder(self):
         """Sort potential trades by profit, then execute the most profitable
         one."""
-        if not self.potential_trades:
-            return
-        # Sort trades by profit, most profitable first
-        self.potential_trades.sort(key=lambda x: x[0], reverse=True)
-        # Execute only the best (more profitable)
-        self.execute_trade(*self.potential_trades[0][:])
+        if self.potential_trades:
+            # Sort trades by profit, most profitable first
+            self.potential_trades.sort(key=lambda x: x[0], reverse=True)
+            # Execute only the best (more profitable)
+            self.execute_trade(*self.potential_trades[0][:])
+
+        time.sleep(1)  # Small pause to not flood API requests
+        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+            for market_name, market in self.clients.items():
+                executor.submit(market.update_order_status())
 
     def max_tradable_volume(self, buy_price, kask, kbid):
         # We're buying primary coins from the market with kask at buy_price
