@@ -85,8 +85,9 @@ class PrivateVircurex(Market):
             else:
                 remaining_open_orders.append(open_order)
 
-        self.open_orders = remaining_open_orders
-        database.order_completed(self.name, completed_order_ids)
+        if completed_order_ids:
+            self.open_orders = remaining_open_orders
+            database.order_completed(self.name, completed_order_ids)
 
     def get_balances(self):
         """Get balance"""
