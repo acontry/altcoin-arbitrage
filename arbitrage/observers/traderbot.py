@@ -37,7 +37,7 @@ class TraderBot(Observer):
             # Execute only the best (more profitable)
             self.execute_trade(*self.potential_trades[0][:])
 
-        time.sleep(1)  # Small pause to not flood API requests
+        time.sleep(5)  # Small pause to not flood API requests
         with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
             for market_name, market in self.clients.items():
                 executor.submit(market.update_order_status())
