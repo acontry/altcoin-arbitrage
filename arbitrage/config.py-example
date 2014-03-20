@@ -26,9 +26,11 @@ bter_secret = "SECRET"
 vircurex_secrets = {"get_balance": "SECRET",
                     "get_balances": "SECRET",   # get_balances uses same secret as get_balance
                     "create_order": "SECRET",
+                    "create_released_order", "SECRET",
                     "release_order": "SECRET",
                     "delete_order": "SECRET",
                     "read_order": "SECRET",
+                    "read_orders": "SECRET", # Same as read_order
                     "read_orderexecutions": "SECRET",
                     }
 vircurex_user = "USER"
