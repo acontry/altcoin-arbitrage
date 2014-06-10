@@ -1,4 +1,3 @@
-# Copyright (C) 2013, Maxime Biais <maxime@biais.org>
 
 import logging
 import argparse
