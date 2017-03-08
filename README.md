@@ -4,39 +4,29 @@ This project is based on the github project
 https://github.com/maxme/bitcoin-arbitrage
 
 The original project was designed for arbitrage between Bitcoin and US dollars/
-Euros, but the focus of the new project is arbitrage between coins, such as
-Dogecoin and Bitcoin. Ideally it should support any coin pair that is available
-to trade on a market.
+Euros, but the focus of this project is arbitrage between coins, such as
+Dogecoin and Bitcoin. It supports arbitrary pairs of currencies.
 
+It gets order books from supported exchanges and calculates arbitrage
+opportunities between each market pair. Depth of the market orderbooks is taken
+into account when looking for opportunities - an important improvement since many
+altcoin orderbooks are quite shallow, limiting the total trade quantity.
 
-It gets order books from supported exchanges and calculate arbitrage
-opportunities between each markets. It takes market depth into account.
+When an arbitrage opportunity is found the opportunity is logged and if the traderbot
+is configured and enabled, orders are places and logged in a database. An example trading
+scenario would be holding DOGE in Vircurex and BTC in Bter. If the DOGE/BTC price in 
+Vircurex rises enough over the price at Bter to cover the bid/ask spread and trading fees,
+DOGE is sold for BTC in Vircurex and and DOGE is bought from BTC in Bter, profiting from the
+price imbalance. Ideally the next step would be to transfer currencies between exchanges to 
+reset the process and repeat the trades if the price imbalance still exists, but automated
+withdrawal isn't supported at all exchanges, plus withdrawal fees make it harder to be 
+profitable.
 
-Currently supported exchanges to get data:
- - Cryptsy (DOGE to BTC)
- - Vircurex (DOGE to BTC)
- - Coins-e (DOGE to BTC)
- - Bter (DOGE to BTC)
-
-Old BTC/dollar exchanges:
- - MtGox (USD, EUR)
- - Bitstamp (USD, ~EUR)
- - Bitcoin24 (EUR)
- - Bitfloor (USD)
- - Bitcoin-Central (EUR)
- - BTC-e (USD, EUR)
- - Intersango (EUR)
- - Bitfinex (USD)
- - Kraken (USD, EUR)
- - Bitcoin-Central (EUR)
-
-Currently supported exchanges to automate trade:
- - Cryptsy (any coin pair)
-
-Old BTC/dollar exchanges:
- - MtGox (EUR, USD)
- - Bitstamp (USD)
- - Bitcoin-Central (EUR) - (API changed)
+Currently supported exchanges for data collection and trading:
+ - Cryptsy (now defunct)
+ - Vircurex 
+ - Coins-e (now defunct)
+ - Bter 
 
 # WARNING
 
@@ -58,10 +48,6 @@ variants of them, use:
 The requests package is required. To install:
 
     $ pip3 install requests
-
-To use the observer XMPPMessager you will need to install sleekxmpp:
-
-    $ pip3 install sleekxmpp
 
 # Run
 
@@ -90,27 +76,7 @@ Run tests
 # TODO
 
  * Tests
- * Write documentation
- * Add other exchanges:
-   * icbit
-   * BitFinex
+ * Improve documentation
  * Update order books with a WebSocket client for supported exchanges
-   (MtGox, Bitcoin-Central)
  * Better history handling for observer "HistoryDumper" (Redis ?)
- * Move EUR / USD from a market to an other:
-   * Coupons
-   * Ripple ?
-   * Negative Operations
-   * use Litecoin or other cryptocurrencies trades
-
-# LICENSE
-
-MIT
-
-Copyright (c) 2013 Maxime Biais <firstname.lastname@gmail.com>
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * Move currency from one market to another
